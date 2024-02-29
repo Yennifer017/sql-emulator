@@ -1,34 +1,8 @@
 
-package compi1.sqlemulator.parser;
+package compi1.sqlemulator.lexer_parser;
 
 import java_cup.runtime.*;
 
-
-parser code {:
-    // Connect this parser to a scanner!
-    public Parser(Lexer lex) {
-	    super(lex);
-	}
-
-private Lexer lexer = new Lexer();
-
-public Lexer getLexer() {
-    return lexer;
-}
-
-public void syntax_error(Symbol cur_token) {
-            System.out.println("Simbolo con error:" + symbl_name_from_id(cur_token.sym));
-            System.out.println("Linea " + cur_token.left);
-            System.out.println("Columna " + cur_token.right);
-            if (expected_token_ids().isEmpty()) {
-                System.out.println("ya no se esperaba ningun simbolo");
-            }
-        }
-/*
-public void unrecovered_syntax_error(Symbol cur_token) {
-            System.out.println("Error irrecuperable sobrecargado");
-        }*/
-:}
 
 /* Terminals (tokens returned by the scanner). */
 terminal        SELECCIONAR, FILTRAR, INSERTAR, ACTUALIZAR, ASIGNAR, ELIMINAR, EN,
@@ -85,7 +59,8 @@ filtros ::= FILTRAR conditions;
 
 conditions ::= condition logic;
 logic ::= and_stm 
-            | or_stm;
+            | or_stm
+            | /*empty*/;
 
 and_stm ::= AND condition and_stm2 ;
 and_stm2 ::= AND condition and_stm2

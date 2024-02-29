@@ -1,5 +1,5 @@
 /* codigo de usuario */
-package compi1.sqlemulator.lexer;
+package compi1.sqlemulator.lexer_parser;
 
 import java_cup.runtime.*;
 
@@ -7,6 +7,7 @@ import java_cup.runtime.*;
 
 /* opciones y declaraciones de jflex */
 
+%public
 %class Lexer
 %cup
 %line

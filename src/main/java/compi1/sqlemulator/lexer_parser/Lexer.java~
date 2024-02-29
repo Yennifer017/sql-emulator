@@ -3,7 +3,7 @@
 // source: Lexer.jflex
 
 /* codigo de usuario */
-package compi1.sqlemulator.lexer;
+package compi1.sqlemulator.lexer_parser;
 
 import java_cup.runtime.*;
 
