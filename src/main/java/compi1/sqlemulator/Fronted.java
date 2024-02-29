@@ -1,20 +1,41 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+
 package compi1.sqlemulator;
 
 /**
  *
  * @author yenni
  */
+
+import compi1.sqlemulator.files.FilesUtil;
+import compi1.sqlemulator.util.NumberLine;
+import java.awt.Dimension;
 public class Fronted extends javax.swing.JFrame {
 
+    //FIELDS
+    private NumberLine numConsole, numDisplayFile;
+    private FilesUtil filesU;
+    public static final String aceptedExtensions[] = {".txt", ".csv"};
     /**
      * Creates new form Fronted
      */
     public Fronted() {
         initComponents();
+        this.setLocationRelativeTo(null);
+        initNumeracion();
+        filesU = new FilesUtil();
+    }
+    
+    private void resizeComponents(){
+        treeProjectPanel.setPreferredSize(new Dimension((int)(0.15*this.getWidth()), this.getHeight()));
+        interfazPanel.setPreferredSize(new Dimension((int) 0.85*this.getWidth(),this.getHeight()));
+    }
+    
+    private void initNumeracion(){
+        numDisplayFile = new NumberLine(display);
+        displayScroll.setRowHeaderView(numDisplayFile);
+        numConsole = new NumberLine(console);
+        consoleScroll.setRowHeaderView(numConsole);
+        //numDisplayFile.updateColumna(colFileDisplay);
     }
 
     /**
@@ -26,22 +47,223 @@ public class Fronted extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        treeProjectPanel = new javax.swing.JPanel();
+        interfazPanel = new javax.swing.JPanel();
+        displayScroll = new javax.swing.JScrollPane();
+        display = new javax.swing.JTextPane();
+        consoleScroll = new javax.swing.JScrollPane();
+        console = new javax.swing.JTextPane();
+        jPanel1 = new javax.swing.JPanel();
+        ClearBtn = new javax.swing.JButton();
+        archivoTxt = new javax.swing.JLabel();
+        fileNameDisplay = new javax.swing.JLabel();
+        menu = new javax.swing.JMenuBar();
+        menuFile = new javax.swing.JMenu();
+        openDirectoryOp = new javax.swing.JMenuItem();
+        createProyectOp = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        openFileOp = new javax.swing.JMenuItem();
+        newFileOp = new javax.swing.JMenuItem();
+        saveOp = new javax.swing.JMenuItem();
+        saveAsOp = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                formComponentResized(evt);
+            }
+        });
+        addWindowStateListener(new java.awt.event.WindowStateListener() {
+            public void windowStateChanged(java.awt.event.WindowEvent evt) {
+                formWindowStateChanged(evt);
+            }
+        });
+
+        treeProjectPanel.setBackground(new java.awt.Color(20, 20, 20));
+        treeProjectPanel.setForeground(new java.awt.Color(13, 13, 13));
+
+        javax.swing.GroupLayout treeProjectPanelLayout = new javax.swing.GroupLayout(treeProjectPanel);
+        treeProjectPanel.setLayout(treeProjectPanelLayout);
+        treeProjectPanelLayout.setHorizontalGroup(
+            treeProjectPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 112, Short.MAX_VALUE)
+        );
+        treeProjectPanelLayout.setVerticalGroup(
+            treeProjectPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        interfazPanel.setBackground(new java.awt.Color(20, 20, 20));
+        interfazPanel.setForeground(new java.awt.Color(13, 13, 13));
+
+        display.setEditable(false);
+        display.setBackground(new java.awt.Color(0, 0, 43));
+        display.setForeground(new java.awt.Color(234, 234, 234));
+        display.setCaretColor(new java.awt.Color(255, 255, 255));
+        displayScroll.setViewportView(display);
+
+        console.setBackground(new java.awt.Color(0, 0, 43));
+        console.setForeground(new java.awt.Color(234, 234, 234));
+        console.setCaretColor(new java.awt.Color(255, 255, 255));
+        consoleScroll.setViewportView(console);
+
+        jPanel1.setBackground(new java.awt.Color(0, 0, 0));
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 46, Short.MAX_VALUE)
+        );
+
+        ClearBtn.setBackground(new java.awt.Color(0, 0, 102));
+        ClearBtn.setForeground(new java.awt.Color(204, 204, 204));
+        ClearBtn.setText("Limpiar");
+        ClearBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ClearBtnActionPerformed(evt);
+            }
+        });
+
+        archivoTxt.setForeground(new java.awt.Color(255, 255, 255));
+        archivoTxt.setText("Archivo actual: ");
+
+        fileNameDisplay.setForeground(new java.awt.Color(255, 255, 255));
+        fileNameDisplay.setText("[none]");
+
+        javax.swing.GroupLayout interfazPanelLayout = new javax.swing.GroupLayout(interfazPanel);
+        interfazPanel.setLayout(interfazPanelLayout);
+        interfazPanelLayout.setHorizontalGroup(
+            interfazPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(interfazPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(interfazPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(displayScroll)
+                    .addComponent(consoleScroll)
+                    .addGroup(interfazPanelLayout.createSequentialGroup()
+                        .addComponent(archivoTxt)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(fileNameDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(64, 387, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, interfazPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(ClearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        interfazPanelLayout.setVerticalGroup(
+            interfazPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(interfazPanelLayout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(interfazPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(fileNameDisplay)
+                    .addComponent(archivoTxt))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(displayScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(ClearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(consoleScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        menuFile.setText("Proyecto");
+
+        openDirectoryOp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        openDirectoryOp.setText("Abrir carpeta");
+        openDirectoryOp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openDirectoryOpActionPerformed(evt);
+            }
+        });
+        menuFile.add(openDirectoryOp);
+
+        createProyectOp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        createProyectOp.setText("Crear proyecto");
+        menuFile.add(createProyectOp);
+
+        menu.add(menuFile);
+
+        jMenu2.setText("Archivo");
+
+        openFileOp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        openFileOp.setText("Abrir archivo");
+        openFileOp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openFileOpActionPerformed(evt);
+            }
+        });
+        jMenu2.add(openFileOp);
+
+        newFileOp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        newFileOp.setText("Nuevo archivo");
+        jMenu2.add(newFileOp);
+
+        saveOp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        saveOp.setText("Guardar");
+        jMenu2.add(saveOp);
+
+        saveAsOp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        saveAsOp.setText("Guardar como");
+        jMenu2.add(saveAsOp);
+
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem1.setText("Cerrar");
+        jMenu2.add(jMenuItem1);
+
+        menu.add(jMenu2);
+
+        setJMenuBar(menu);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(treeProjectPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(interfazPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addComponent(treeProjectPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(interfazPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void openDirectoryOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openDirectoryOpActionPerformed
+        System.out.println("Aqui deberia poder abrir un menu");
+    }//GEN-LAST:event_openDirectoryOpActionPerformed
+
+    private void openFileOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileOpActionPerformed
+        this.display.setText(filesU.readTextFile(
+                filesU.getPath("Archivos aceptados", aceptedExtensions)));
+    }//GEN-LAST:event_openFileOpActionPerformed
+
+    private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
+        resizeComponents();
+    }//GEN-LAST:event_formComponentResized
+
+    private void formWindowStateChanged(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowStateChanged
+        if(evt.getNewState() == MAXIMIZED_BOTH || evt.getNewState() == MAXIMIZED_HORIZ || 
+                evt.getNewState() == MAXIMIZED_VERT || evt.getNewState() == 0){
+            this.resizeComponents();
+        }
+    }//GEN-LAST:event_formWindowStateChanged
+
+    private void ClearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClearBtnActionPerformed
+        console.setText("");
+    }//GEN-LAST:event_ClearBtnActionPerformed
+
+    
     /**
      * @param args the command line arguments
      */
@@ -78,5 +300,25 @@ public class Fronted extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton ClearBtn;
+    private javax.swing.JLabel archivoTxt;
+    private javax.swing.JTextPane console;
+    private javax.swing.JScrollPane consoleScroll;
+    private javax.swing.JMenuItem createProyectOp;
+    private javax.swing.JTextPane display;
+    private javax.swing.JScrollPane displayScroll;
+    private javax.swing.JLabel fileNameDisplay;
+    private javax.swing.JPanel interfazPanel;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JMenuBar menu;
+    private javax.swing.JMenu menuFile;
+    private javax.swing.JMenuItem newFileOp;
+    private javax.swing.JMenuItem openDirectoryOp;
+    private javax.swing.JMenuItem openFileOp;
+    private javax.swing.JMenuItem saveAsOp;
+    private javax.swing.JMenuItem saveOp;
+    private javax.swing.JPanel treeProjectPanel;
     // End of variables declaration//GEN-END:variables
 }

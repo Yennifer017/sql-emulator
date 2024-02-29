@@ -22,5 +22,8 @@ public class SQLemulator {
             e.printStackTrace();
             System.out.println("manejo de exception");
         }*/
+        
+        Fronted fronted = new Fronted();
+        fronted.setVisible(true);
     }
 }
