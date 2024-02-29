@@ -6,14 +6,17 @@ package compi1.sqlemulator;
  * @author yenni
  */
 
+import compi1.sqlemulator.files.DirectoriesUtil;
 import compi1.sqlemulator.files.FilesUtil;
 import compi1.sqlemulator.util.NumberLine;
 import java.awt.Dimension;
+import javax.swing.JOptionPane;
 public class Fronted extends javax.swing.JFrame {
 
     //FIELDS
     private NumberLine numConsole, numDisplayFile;
     private FilesUtil filesU;
+    private DirectoriesUtil directoriesU;
     public static final String aceptedExtensions[] = {".txt", ".csv"};
     /**
      * Creates new form Fronted
@@ -22,7 +25,12 @@ public class Fronted extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
         initNumeracion();
+        initVariables();
+    }
+    
+    private void initVariables(){
         filesU = new FilesUtil();
+        directoriesU =  new DirectoriesUtil();
     }
     
     private void resizeComponents(){
@@ -35,7 +43,6 @@ public class Fronted extends javax.swing.JFrame {
         displayScroll.setRowHeaderView(numDisplayFile);
         numConsole = new NumberLine(console);
         consoleScroll.setRowHeaderView(numConsole);
-        //numDisplayFile.updateColumna(colFileDisplay);
     }
 
     /**
@@ -67,6 +74,9 @@ public class Fronted extends javax.swing.JFrame {
         saveOp = new javax.swing.JMenuItem();
         saveAsOp = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
+        Information = new javax.swing.JMenu();
+        helpOp = new javax.swing.JMenuItem();
+        creditsOp = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -219,6 +229,26 @@ public class Fronted extends javax.swing.JFrame {
 
         menu.add(jMenu2);
 
+        Information.setText("Informacion");
+
+        helpOp.setText("Ayuda");
+        helpOp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                helpOpActionPerformed(evt);
+            }
+        });
+        Information.add(helpOp);
+
+        creditsOp.setText("Creditos");
+        creditsOp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                creditsOpActionPerformed(evt);
+            }
+        });
+        Information.add(creditsOp);
+
+        menu.add(Information);
+
         setJMenuBar(menu);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -240,7 +270,7 @@ public class Fronted extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void openDirectoryOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openDirectoryOpActionPerformed
-        System.out.println("Aqui deberia poder abrir un menu");
+        System.out.println(directoriesU.getPathFolder());
     }//GEN-LAST:event_openDirectoryOpActionPerformed
 
     private void openFileOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileOpActionPerformed
@@ -263,51 +293,31 @@ public class Fronted extends javax.swing.JFrame {
         console.setText("");
     }//GEN-LAST:event_ClearBtnActionPerformed
 
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Fronted.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Fronted.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Fronted.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Fronted.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void helpOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpOpActionPerformed
+        JOptionPane.showMessageDialog(null, 
+                "Puedes consultar el manual de usuario en el repositorio de github", 
+                "Ayuda", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_helpOpActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Fronted().setVisible(true);
-            }
-        });
-    }
+    private void creditsOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_creditsOpActionPerformed
+        JOptionPane.showMessageDialog(null, 
+                "Proyecto creado con un poquito (demasiado) de desesperacion...\n    --Yennifer", 
+                "Ayuda", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_creditsOpActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ClearBtn;
+    private javax.swing.JMenu Information;
     private javax.swing.JLabel archivoTxt;
     private javax.swing.JTextPane console;
     private javax.swing.JScrollPane consoleScroll;
     private javax.swing.JMenuItem createProyectOp;
+    private javax.swing.JMenuItem creditsOp;
     private javax.swing.JTextPane display;
     private javax.swing.JScrollPane displayScroll;
     private javax.swing.JLabel fileNameDisplay;
+    private javax.swing.JMenuItem helpOp;
     private javax.swing.JPanel interfazPanel;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem1;
