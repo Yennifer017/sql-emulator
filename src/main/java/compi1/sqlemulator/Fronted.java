@@ -6,8 +6,9 @@ package compi1.sqlemulator;
  * @author yenni
  */
 
-import compi1.sqlemulator.files.DirectoriesUtil;
-import compi1.sqlemulator.files.FilesUtil;
+import compi1.sqlemulator.exceptions.DirectoryException;
+import compi1.sqlemulator.exceptions.ProjectOpenException;
+import compi1.sqlemulator.files.AdmiFiles;
 import compi1.sqlemulator.util.NumberLine;
 import java.awt.Dimension;
 import javax.swing.JOptionPane;
@@ -15,9 +16,7 @@ public class Fronted extends javax.swing.JFrame {
 
     //FIELDS
     private NumberLine numConsole, numDisplayFile;
-    private FilesUtil filesU;
-    private DirectoriesUtil directoriesU;
-    public static final String aceptedExtensions[] = {".txt", ".csv"};
+    private AdmiFiles admiFiles;
     /**
      * Creates new form Fronted
      */
@@ -29,13 +28,16 @@ public class Fronted extends javax.swing.JFrame {
     }
     
     private void initVariables(){
-        filesU = new FilesUtil();
-        directoriesU =  new DirectoriesUtil();
+        admiFiles = new AdmiFiles(treeDirectory);
     }
     
     private void resizeComponents(){
-        treeProjectPanel.setPreferredSize(new Dimension((int)(0.15*this.getWidth()), this.getHeight()));
+        treeDirectory.setPreferredSize(new Dimension((int)(0.15*this.getWidth()), this.getHeight()));
         interfazPanel.setPreferredSize(new Dimension((int) 0.85*this.getWidth(),this.getHeight()));
+        if(admiFiles!= null){
+            admiFiles.resizeTreeDirectory();
+        }
+        System.out.println("Se han resizado los componentes");
     }
     
     private void initNumeracion(){
@@ -54,13 +56,13 @@ public class Fronted extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        treeProjectPanel = new javax.swing.JPanel();
+        treeDirectory = new javax.swing.JPanel();
         interfazPanel = new javax.swing.JPanel();
         displayScroll = new javax.swing.JScrollPane();
         display = new javax.swing.JTextPane();
         consoleScroll = new javax.swing.JScrollPane();
         console = new javax.swing.JTextPane();
-        jPanel1 = new javax.swing.JPanel();
+        openFilesPanel = new javax.swing.JPanel();
         ClearBtn = new javax.swing.JButton();
         archivoTxt = new javax.swing.JLabel();
         fileNameDisplay = new javax.swing.JLabel();
@@ -90,17 +92,16 @@ public class Fronted extends javax.swing.JFrame {
             }
         });
 
-        treeProjectPanel.setBackground(new java.awt.Color(20, 20, 20));
-        treeProjectPanel.setForeground(new java.awt.Color(13, 13, 13));
+        treeDirectory.setBackground(new java.awt.Color(0, 0, 0));
 
-        javax.swing.GroupLayout treeProjectPanelLayout = new javax.swing.GroupLayout(treeProjectPanel);
-        treeProjectPanel.setLayout(treeProjectPanelLayout);
-        treeProjectPanelLayout.setHorizontalGroup(
-            treeProjectPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 112, Short.MAX_VALUE)
+        javax.swing.GroupLayout treeDirectoryLayout = new javax.swing.GroupLayout(treeDirectory);
+        treeDirectory.setLayout(treeDirectoryLayout);
+        treeDirectoryLayout.setHorizontalGroup(
+            treeDirectoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 141, Short.MAX_VALUE)
         );
-        treeProjectPanelLayout.setVerticalGroup(
-            treeProjectPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        treeDirectoryLayout.setVerticalGroup(
+            treeDirectoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
@@ -118,16 +119,16 @@ public class Fronted extends javax.swing.JFrame {
         console.setCaretColor(new java.awt.Color(255, 255, 255));
         consoleScroll.setViewportView(console);
 
-        jPanel1.setBackground(new java.awt.Color(0, 0, 0));
+        openFilesPanel.setBackground(new java.awt.Color(0, 0, 0));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout openFilesPanelLayout = new javax.swing.GroupLayout(openFilesPanel);
+        openFilesPanel.setLayout(openFilesPanelLayout);
+        openFilesPanelLayout.setHorizontalGroup(
+            openFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        openFilesPanelLayout.setVerticalGroup(
+            openFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 46, Short.MAX_VALUE)
         );
 
@@ -150,7 +151,7 @@ public class Fronted extends javax.swing.JFrame {
         interfazPanel.setLayout(interfazPanelLayout);
         interfazPanelLayout.setHorizontalGroup(
             interfazPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(openFilesPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(interfazPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(interfazPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -160,7 +161,7 @@ public class Fronted extends javax.swing.JFrame {
                         .addComponent(archivoTxt)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(fileNameDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(64, 387, Short.MAX_VALUE))
+                        .addGap(64, 370, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, interfazPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(ClearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -169,7 +170,7 @@ public class Fronted extends javax.swing.JFrame {
         interfazPanelLayout.setVerticalGroup(
             interfazPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(interfazPanelLayout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(openFilesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(interfazPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(fileNameDisplay)
@@ -256,26 +257,40 @@ public class Fronted extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(treeProjectPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(treeDirectory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(interfazPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(treeProjectPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(interfazPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(treeDirectory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void openDirectoryOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openDirectoryOpActionPerformed
-        System.out.println(directoriesU.getPathFolder());
+        try {
+            admiFiles.OpenProject();
+        } catch (ProjectOpenException ex) {
+            if(JOptionPane.showConfirmDialog(null, "Deseas cerar el proyecto actual?", 
+                    "Cerrar proyecto", JOptionPane.DEFAULT_OPTION) == 1){
+                try {
+                    admiFiles.closeProject();
+                } catch (DirectoryException ex1) {
+                    JOptionPane.showMessageDialog(null, "Ocurrio un error inesperado :c",
+                            "Error", JOptionPane.PLAIN_MESSAGE);
+                }
+            }
+        } catch (DirectoryException ex) {
+            JOptionPane.showMessageDialog(null, "No se ha seleccionado un proyecto valido",
+                            "Error", JOptionPane.PLAIN_MESSAGE);
+        }
     }//GEN-LAST:event_openDirectoryOpActionPerformed
 
     private void openFileOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileOpActionPerformed
-        this.display.setText(filesU.readTextFile(
-                filesU.getPath("Archivos aceptados", aceptedExtensions)));
+        
     }//GEN-LAST:event_openFileOpActionPerformed
 
     private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
@@ -321,14 +336,14 @@ public class Fronted extends javax.swing.JFrame {
     private javax.swing.JPanel interfazPanel;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JMenuBar menu;
     private javax.swing.JMenu menuFile;
     private javax.swing.JMenuItem newFileOp;
     private javax.swing.JMenuItem openDirectoryOp;
     private javax.swing.JMenuItem openFileOp;
+    private javax.swing.JPanel openFilesPanel;
     private javax.swing.JMenuItem saveAsOp;
     private javax.swing.JMenuItem saveOp;
-    private javax.swing.JPanel treeProjectPanel;
+    private javax.swing.JPanel treeDirectory;
     // End of variables declaration//GEN-END:variables
 }
