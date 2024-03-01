@@ -48,18 +48,31 @@ public class Fronted extends javax.swing.JFrame {
         consoleScroll.setRowHeaderView(numConsole);
     }
 
+    private void closeProject() {
+        try {
+            admiFiles.closeProject(display, fileNameDisplay);
+            display.setText("");
+        } catch (DirectoryException ex) {
+            System.out.println("Excepcion de directorio controlada");
+        }
+    }
+
+    private void closeFile() {
+        try {
+            admiFiles.closeFile(display, fileNameDisplay);
+        } catch (FileException ex1) {
+            showInesperatedError();
+        }
+    }
+
     private void openProject() {
         try {
             admiFiles.OpenProject();
         } catch (ProjectOpenException ex) {
             if (JOptionPane.showConfirmDialog(null, "Deseas cerar el proyecto actual?",
                     "Cerrar proyecto", JOptionPane.YES_NO_OPTION) == 0) {
-                try {
-                    admiFiles.closeProject();
-                    this.openProject();
-                } catch (Exception e) {
-                    showInesperatedError();
-                }
+                closeProject();
+                this.openProject();
             }
         } catch (DirectoryException ex) {
             JOptionPane.showMessageDialog(null, "No se ha seleccionado un proyecto valido",
@@ -69,11 +82,7 @@ public class Fronted extends javax.swing.JFrame {
         } catch (FileOpenException ex) {
             if (JOptionPane.showConfirmDialog(null, "Hay un archivo abierto, deseas cerrarlo?",
                     "Cerrar archivo", JOptionPane.YES_NO_OPTION) == 0) {
-                try {
-                    admiFiles.closeFile();
-                } catch (Exception ex1) {
-                    showInesperatedError();
-                }
+                closeFile();
             }
         }
     }
@@ -105,10 +114,11 @@ public class Fronted extends javax.swing.JFrame {
         archivoTxt = new javax.swing.JLabel();
         fileNameDisplay = new javax.swing.JLabel();
         menu = new javax.swing.JMenuBar();
-        menuFile = new javax.swing.JMenu();
+        projectMenu = new javax.swing.JMenu();
         openDirectoryOp = new javax.swing.JMenuItem();
         createProyectOp = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        closeProjectOp = new javax.swing.JMenuItem();
+        fileMenu = new javax.swing.JMenu();
         openFileOp = new javax.swing.JMenuItem();
         newFileOp = new javax.swing.JMenuItem();
         saveOp = new javax.swing.JMenuItem();
@@ -132,6 +142,7 @@ public class Fronted extends javax.swing.JFrame {
 
         treeDirectory.setBackground(new java.awt.Color(0, 0, 0));
 
+        treeDisplay.setBackground(new java.awt.Color(51, 51, 51));
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
         treeDisplay.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
         treeDisplay.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -219,7 +230,7 @@ public class Fronted extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        menuFile.setText("Proyecto");
+        projectMenu.setText("Proyecto");
 
         openDirectoryOp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         openDirectoryOp.setText("Abrir carpeta");
@@ -228,15 +239,23 @@ public class Fronted extends javax.swing.JFrame {
                 openDirectoryOpActionPerformed(evt);
             }
         });
-        menuFile.add(openDirectoryOp);
+        projectMenu.add(openDirectoryOp);
 
         createProyectOp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         createProyectOp.setText("Crear proyecto");
-        menuFile.add(createProyectOp);
+        projectMenu.add(createProyectOp);
 
-        menu.add(menuFile);
+        closeProjectOp.setText("Cerrar proyecto");
+        closeProjectOp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeProjectOpActionPerformed(evt);
+            }
+        });
+        projectMenu.add(closeProjectOp);
 
-        jMenu2.setText("Archivo");
+        menu.add(projectMenu);
+
+        fileMenu.setText("Archivo");
 
         openFileOp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         openFileOp.setText("Abrir archivo");
@@ -245,11 +264,11 @@ public class Fronted extends javax.swing.JFrame {
                 openFileOpActionPerformed(evt);
             }
         });
-        jMenu2.add(openFileOp);
+        fileMenu.add(openFileOp);
 
         newFileOp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         newFileOp.setText("Nuevo archivo");
-        jMenu2.add(newFileOp);
+        fileMenu.add(newFileOp);
 
         saveOp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         saveOp.setText("Guardar");
@@ -258,7 +277,7 @@ public class Fronted extends javax.swing.JFrame {
                 saveOpActionPerformed(evt);
             }
         });
-        jMenu2.add(saveOp);
+        fileMenu.add(saveOp);
 
         saveAsOp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         saveAsOp.setText("Guardar como");
@@ -267,7 +286,7 @@ public class Fronted extends javax.swing.JFrame {
                 saveAsOpActionPerformed(evt);
             }
         });
-        jMenu2.add(saveAsOp);
+        fileMenu.add(saveAsOp);
 
         CloseFileOp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         CloseFileOp.setText("Cerrar archivo");
@@ -276,9 +295,9 @@ public class Fronted extends javax.swing.JFrame {
                 CloseFileOpActionPerformed(evt);
             }
         });
-        jMenu2.add(CloseFileOp);
+        fileMenu.add(CloseFileOp);
 
-        menu.add(jMenu2);
+        menu.add(fileMenu);
 
         Information.setText("Informacion");
 
@@ -326,12 +345,14 @@ public class Fronted extends javax.swing.JFrame {
 
     private void openFileOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileOpActionPerformed
         try {
-            admiFiles.openFile(display);
+            admiFiles.openFile(display, fileNameDisplay);
         } catch (ProjectOpenException ex) {
-            JOptionPane.showMessageDialog(null, "Hay un proyecto abierto, cierralo primero");
+            JOptionPane.showMessageDialog(null, 
+                    "Hay un archivo o proyecto abierto cierralo y vuelve a intentarlo");
         } catch (IOException ex) {
             System.out.println("Excepcion controlada");
         }
+        
     }//GEN-LAST:event_openFileOpActionPerformed
 
     private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
@@ -366,7 +387,11 @@ public class Fronted extends javax.swing.JFrame {
             try {
                 admiFiles.openFileFromProject(display, fileNameDisplay);
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(null, "Ah ocurrido un error :/");
+                showInesperatedError();
+            } catch (FileOpenException ex) {
+                JOptionPane.showMessageDialog(null, "El archivo ya esta abierto");
+            } catch (FileException ex){
+                System.out.println("Excepcion controlada");
             }
         }
     }//GEN-LAST:event_treeDisplayMouseClicked
@@ -384,14 +409,12 @@ public class Fronted extends javax.swing.JFrame {
     }//GEN-LAST:event_saveAsOpActionPerformed
 
     private void CloseFileOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseFileOpActionPerformed
-        try {
-            admiFiles.closeFile();
-        } catch (FileException ex) {
-            Logger.getLogger(Fronted.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (FileOpenException ex) {
-            showInesperatedError();
-        }
+        this.closeFile();
     }//GEN-LAST:event_CloseFileOpActionPerformed
+
+    private void closeProjectOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeProjectOpActionPerformed
+        closeProject();
+    }//GEN-LAST:event_closeProjectOpActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -399,23 +422,24 @@ public class Fronted extends javax.swing.JFrame {
     private javax.swing.JMenuItem CloseFileOp;
     private javax.swing.JMenu Information;
     private javax.swing.JLabel archivoTxt;
+    private javax.swing.JMenuItem closeProjectOp;
     private javax.swing.JTextPane console;
     private javax.swing.JScrollPane consoleScroll;
     private javax.swing.JMenuItem createProyectOp;
     private javax.swing.JMenuItem creditsOp;
     private javax.swing.JTextPane display;
     private javax.swing.JScrollPane displayScroll;
+    private javax.swing.JMenu fileMenu;
     private javax.swing.JLabel fileNameDisplay;
     private javax.swing.JMenuItem helpOp;
     private javax.swing.JPanel interfazPanel;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JMenuBar menu;
-    private javax.swing.JMenu menuFile;
     private javax.swing.JMenuItem newFileOp;
     private javax.swing.JMenuItem openDirectoryOp;
     private javax.swing.JMenuItem openFileOp;
     private javax.swing.JPanel openFilesPanel;
+    private javax.swing.JMenu projectMenu;
     private javax.swing.JMenuItem saveAsOp;
     private javax.swing.JMenuItem saveOp;
     private javax.swing.JPanel treeDirectory;

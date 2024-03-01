@@ -4,7 +4,7 @@ import compi1.sqlemulator.exceptions.DirectoryException;
 import compi1.sqlemulator.exceptions.FileException;
 import compi1.sqlemulator.exceptions.FileOpenException;
 import compi1.sqlemulator.exceptions.ProjectOpenException;
-import java.awt.Button;
+import compi1.sqlemulator.util.BinarySearch;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,7 +24,8 @@ import javax.swing.tree.DefaultTreeModel;
  */
 public class AdmiFiles {
 
-    public static final String aceptedExtensions[] = {".txt", ".csv"};
+    public static final String aceptedExtensions[] = {"txt", "csv"};
+    private static final String EMPTY_NOTATION = "[none]";
 
     private List<FileProject> currentProject;
     private List<OpenFile> openFiles;
@@ -44,7 +45,13 @@ public class AdmiFiles {
         openFiles = new ArrayList<>();
         this.filesBar = filesBar;
     }
-
+    /**
+     * Abre un proyecto que el usuario selecionara
+     * @throws compi1.sqlemulator.exceptions.ProjectOpenException
+     * @throws compi1.sqlemulator.exceptions.DirectoryException
+     * @throws java.io.IOException
+     * @throws compi1.sqlemulator.exceptions.FileOpenException
+     */
     public void OpenProject() 
             throws ProjectOpenException, DirectoryException, IOException, FileOpenException {
         if (!currentProject.isEmpty()) {
@@ -82,15 +89,28 @@ public class AdmiFiles {
         }
     }
 
-    public void openFileFromProject(JTextPane display, JLabel labelForName) throws IOException {
+    /**
+     * Abre un archivo al tener seleccionado un elemento del arbol de trabajo
+     * @param display
+     * @param labelForName
+     * @throws java.io.IOException
+     * @throws compi1.sqlemulator.exceptions.FileOpenException
+     * @throws compi1.sqlemulator.exceptions.FileException
+     */
+    public void openFileFromProject(JTextPane display, JLabel labelForName) 
+            throws IOException, FileOpenException, FileException {
         if (currentFile != null) {
             currentFile.setOpenContent(display.getText());
         }
         DefaultMutableTreeNode selectedNode
                 = (DefaultMutableTreeNode) treeDisplay.getLastSelectedPathComponent();
-        if (selectedNode != null) { // y el archivo no esta abierto aun
+        if (selectedNode != null ) { 
+            if(!(selectedNode.getUserObject() instanceof FileProject)){
+                throw new FileException();
+            }
             FileProject selectedFile = (FileProject) selectedNode.getUserObject();
-            if (selectedFile.getFile().isFile()) {
+            if (selectedFile.getFile().isFile() // y el archivo no esta abierto aun
+                    && BinarySearch.search(openFiles, selectedFile.getFile().getAbsolutePath()) == -1) {
                 File file = selectedFile.getFile();
                 String content = filesU.readTextFile(file.getAbsolutePath());
                 currentFile = new OpenFile(file, content);
@@ -98,12 +118,22 @@ public class AdmiFiles {
                 Collections.sort(openFiles);
                 display.setText(filesU.readTextFile(selectedFile.getFile().getAbsolutePath()));
                 labelForName.setText(file.getName());
-                filesBar.add(new Button(file.getName()));
-            }
+                //anadir los botones
+                currentFile.init(display, labelForName, this);
+                filesBar.add(currentFile);
+            }else if(selectedFile.getFile().isFile()){ //cuando ya esta abierto
+                throw new FileOpenException();
+            } 
         }
     }
 
-    public void closeProject() throws DirectoryException {
+    /**
+     * Ciera el proyecto actual
+     * @param display
+     * @param labelForName
+     * @throws compi1.sqlemulator.exceptions.DirectoryException cuando no hay un proyecto abierto
+     */
+    public void closeProject(JTextPane display, JLabel labelForName) throws DirectoryException {
         if (currentProject.isEmpty()) {
             throw new DirectoryException();
         } else {
@@ -112,13 +142,49 @@ public class AdmiFiles {
             treeDisplay.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("root")));
             treeDisplay.revalidate();
             treeDisplay.repaint();
+            closeOpenFiles(display, labelForName);
         }
     }
     
-    public void closeFile() throws FileException, FileOpenException{
-        //TODO: arreglar esto
+    private void closeFileInProject(JTextPane display, JLabel labelForName) throws FileException{
+        int position = BinarySearch.search(openFiles, currentFile.getFile().getAbsolutePath());
+        if(position != -1){
+            openFiles.remove(position);
+            filesBar.remove(currentFile);
+            filesBar.revalidate();
+            filesBar.repaint();
+            currentFile = null;
+            display.setText("");
+            labelForName.setText(EMPTY_NOTATION);
+        }else{
+            throw new FileException();
+        }
+    }
+    
+    
+    public void closeFile(JTextPane display, JLabel labelForName) throws FileException{
+        if(!currentProject.isEmpty()){
+            closeFileInProject(display, labelForName);
+        }else if(currentFile != null){
+            closeOpenFiles(display, labelForName);
+        }
+    }
+    
+    public void closeOpenFiles(JTextPane display, JLabel labelForName){
+        filesBar.removeAll();
+        filesBar.revalidate();
+        filesBar.repaint();
+        openFiles.clear();
+        currentFile = null;
+        display.setText("");
+        labelForName.setText(EMPTY_NOTATION);
     }
 
+    /**
+     * Guarda el archivo actual
+     * @param displayContent donde se tiene escrito el texto
+     * @throws compi1.sqlemulator.exceptions.FileException
+     */
     public void saveFile(JTextPane displayContent) throws FileException {
         if (currentFile != null) {
             filesU.saveFile(displayContent.getText(), currentFile.getFile());
@@ -127,14 +193,33 @@ public class AdmiFiles {
         }
     }
 
-    public void openFile(JTextPane display) throws ProjectOpenException, IOException {
-        if(!currentProject.isEmpty()){
+    /**
+     * Abre un archivo cuando no hay un proyecto abierto
+     * @param display para setear el nombre del archivo
+     * @param displayName
+     * @throws compi1.sqlemulator.exceptions.ProjectOpenException cuando hay un proyecto abierto
+     * @throws java.io.IOException por cualquier excepcion extra
+     */
+    public void openFile(JTextPane display, JLabel displayName) throws ProjectOpenException, IOException {
+        if(!currentProject.isEmpty() || currentFile!= null){
             throw new ProjectOpenException();
         }else{
             File file = new File(filesU.getPath("Archivos svc o txt", 
                     aceptedExtensions));
-            display.setText(filesU.readTextFile(file.getAbsolutePath()));
+            String content = filesU.readTextFile(file.getAbsolutePath());
+            display.setText(content);
+            displayName.setText(file.getName());
+            currentFile = new OpenFile(file, content);
         }
+    }
+    
+    
+    protected void setCurrentFile(OpenFile currentFile){
+        this.currentFile = currentFile;
+    }
+    
+    protected OpenFile getCurrentFile(){
+        return this.currentFile;
     }
 
 }

@@ -4,7 +4,7 @@
   <NonVisualComponents>
     <Menu class="javax.swing.JMenuBar" name="menu">
       <SubComponents>
-        <Menu class="javax.swing.JMenu" name="menuFile">
+        <Menu class="javax.swing.JMenu" name="projectMenu">
           <Properties>
             <Property name="text" type="java.lang.String" value="Proyecto"/>
           </Properties>
@@ -28,9 +28,17 @@
                 <Property name="text" type="java.lang.String" value="Crear proyecto"/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="closeProjectOp">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Cerrar proyecto"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="closeProjectOpActionPerformed"/>
+              </Events>
+            </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu2">
+        <Menu class="javax.swing.JMenu" name="fileMenu">
           <Properties>
             <Property name="text" type="java.lang.String" value="Archivo"/>
           </Properties>
@@ -186,6 +194,9 @@
           <SubComponents>
             <Component class="javax.swing.JTree" name="treeDisplay">
               <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="33" green="33" red="33" type="rgb"/>
+                </Property>
                 <Property name="model" type="javax.swing.tree.TreeModel" editor="org.netbeans.modules.form.editors2.TreeModelEditor">
                   <TreeModel code=""/>
                 </Property>
