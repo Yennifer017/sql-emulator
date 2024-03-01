@@ -3,6 +3,7 @@ package compi1.sqlemulator.files;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,8 +16,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * @author yenni
  */
 public class FilesUtil {
-
-    public String readTextFile(String path) { //obtiene el texto contenido en un archivo y lo devuelve
+    /**
+     * Leer el contenido de un archivo
+     * @param path del archivo
+     * @return el texto leido
+     */
+    public String readTextFile(String path) throws FileNotFoundException, IOException { //obtiene el texto contenido en un archivo y lo devuelve
         String texto = "";
         try {
             File archivo = new File(path); //creando el archivo
@@ -28,12 +33,17 @@ public class FilesUtil {
             }
             buffer.close();
             lector.close();
-        } catch (IOException | NullPointerException error) {
+        } catch (NullPointerException error) {
             System.out.println("No se ha podido abrir un archivo, excepcion controlada");
         }
         return texto;
     }
 
+    /**
+     * Muestra un selector de un archivo con cualquier extension
+     * @return el path del archivo
+     * @throws java.io.IOException
+     */
     public String getPath() throws IOException {
         try {
             JFileChooser buscador = new JFileChooser(); //creando el buscador de archivos
@@ -44,6 +54,12 @@ public class FilesUtil {
         }
     }
 
+    /**
+     * Obtiene el path a partir de un selector de archivos
+     * @param description para el usuario
+     * @param aceptedExtensionFiles, lista de extensiones aceptadas
+     * @return 
+     */
     public String getPath(String description, String[] aceptedExtensionFiles) {
         try {
             JFileChooser buscador = new JFileChooser(); //creando el buscador de archivos
@@ -53,14 +69,23 @@ public class FilesUtil {
             buscador.showOpenDialog(null); //abrir el buscador
             return buscador.getSelectedFile().getAbsolutePath();
         } catch (NullPointerException e) {
-            return null;
+            return "not-found";
         }
     }
 
+    /**
+     * Reescribe un archivo a partir de un texto
+     * @param texto
+     * @param path
+     */
     public void saveFile(String texto, String ruta) { //reescribe un archivo a partir de un texto
-        try {
             File archivo = new File(ruta); //obtiene el archivo de la ruta
-            FileWriter escritor = new FileWriter(archivo, false);
+            saveFile(texto, archivo);
+    }
+    
+    public void saveFile(String texto, File file){
+        try {
+            FileWriter escritor = new FileWriter(file, false);
             BufferedWriter buffer = new BufferedWriter(escritor);
             buffer.write(texto);
             buffer.close();

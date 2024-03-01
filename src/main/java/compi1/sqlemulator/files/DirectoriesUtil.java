@@ -5,7 +5,6 @@ import compi1.sqlemulator.exceptions.DirectoryException;
 import java.util.List;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import javax.swing.JFileChooser;
 
@@ -55,6 +54,10 @@ public class DirectoriesUtil {
         }else {
             throw new DirectoryException();
         }
+    }
+    
+    public void createCarpet(){
+        //TODO: implement the function
     }
 }
 
