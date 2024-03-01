@@ -34,13 +34,13 @@ public class FilesUtil {
         return texto;
     }
 
-    public String getPath() {
+    public String getPath() throws IOException {
         try {
             JFileChooser buscador = new JFileChooser(); //creando el buscador de archivos
             buscador.showOpenDialog(null); //abrir el buscador
             return buscador.getSelectedFile().getAbsolutePath();
         } catch (NullPointerException e) {
-            return "";
+            throw new IOException();
         }
     }
 

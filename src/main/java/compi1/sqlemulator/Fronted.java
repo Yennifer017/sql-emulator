@@ -1,22 +1,24 @@
-
 package compi1.sqlemulator;
 
 /**
  *
  * @author yenni
  */
-
 import compi1.sqlemulator.exceptions.DirectoryException;
 import compi1.sqlemulator.exceptions.ProjectOpenException;
 import compi1.sqlemulator.files.AdmiFiles;
 import compi1.sqlemulator.util.NumberLine;
 import java.awt.Dimension;
 import javax.swing.JOptionPane;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+
 public class Fronted extends javax.swing.JFrame {
 
     //FIELDS
     private NumberLine numConsole, numDisplayFile;
     private AdmiFiles admiFiles;
+
     /**
      * Creates new form Fronted
      */
@@ -26,21 +28,17 @@ public class Fronted extends javax.swing.JFrame {
         initNumeracion();
         initVariables();
     }
-    
-    private void initVariables(){
-        admiFiles = new AdmiFiles(treeDirectory);
+
+    private void initVariables() {
+        admiFiles = new AdmiFiles(treeDisplay);
     }
-    
-    private void resizeComponents(){
-        treeDirectory.setPreferredSize(new Dimension((int)(0.15*this.getWidth()), this.getHeight()));
-        interfazPanel.setPreferredSize(new Dimension((int) 0.85*this.getWidth(),this.getHeight()));
-        if(admiFiles!= null){
-            admiFiles.resizeTreeDirectory();
-        }
-        System.out.println("Se han resizado los componentes");
+
+    private void resizeComponents() {
+        treeDirectory.setPreferredSize(new Dimension((int) (0.15 * this.getWidth()), this.getHeight()));
+        interfazPanel.setPreferredSize(new Dimension((int) 0.85 * this.getWidth(), this.getHeight()));
     }
-    
-    private void initNumeracion(){
+
+    private void initNumeracion() {
         numDisplayFile = new NumberLine(display);
         displayScroll.setRowHeaderView(numDisplayFile);
         numConsole = new NumberLine(console);
@@ -57,6 +55,8 @@ public class Fronted extends javax.swing.JFrame {
     private void initComponents() {
 
         treeDirectory = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        treeDisplay = new javax.swing.JTree();
         interfazPanel = new javax.swing.JPanel();
         displayScroll = new javax.swing.JScrollPane();
         display = new javax.swing.JTextPane();
@@ -94,15 +94,19 @@ public class Fronted extends javax.swing.JFrame {
 
         treeDirectory.setBackground(new java.awt.Color(0, 0, 0));
 
+        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
+        treeDisplay.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+        jScrollPane2.setViewportView(treeDisplay);
+
         javax.swing.GroupLayout treeDirectoryLayout = new javax.swing.GroupLayout(treeDirectory);
         treeDirectory.setLayout(treeDirectoryLayout);
         treeDirectoryLayout.setHorizontalGroup(
             treeDirectoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 141, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
         );
         treeDirectoryLayout.setVerticalGroup(
             treeDirectoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
         );
 
         interfazPanel.setBackground(new java.awt.Color(20, 20, 20));
@@ -161,7 +165,7 @@ public class Fronted extends javax.swing.JFrame {
                         .addComponent(archivoTxt)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(fileNameDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(64, 370, Short.MAX_VALUE))
+                        .addGap(64, 400, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, interfazPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(ClearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -274,8 +278,8 @@ public class Fronted extends javax.swing.JFrame {
         try {
             admiFiles.OpenProject();
         } catch (ProjectOpenException ex) {
-            if(JOptionPane.showConfirmDialog(null, "Deseas cerar el proyecto actual?", 
-                    "Cerrar proyecto", JOptionPane.DEFAULT_OPTION) == 1){
+            if (JOptionPane.showConfirmDialog(null, "Deseas cerar el proyecto actual?",
+                    "Cerrar proyecto", JOptionPane.DEFAULT_OPTION) == 1) {
                 try {
                     admiFiles.closeProject();
                 } catch (DirectoryException ex1) {
@@ -285,12 +289,12 @@ public class Fronted extends javax.swing.JFrame {
             }
         } catch (DirectoryException ex) {
             JOptionPane.showMessageDialog(null, "No se ha seleccionado un proyecto valido",
-                            "Error", JOptionPane.PLAIN_MESSAGE);
+                    "Error", JOptionPane.PLAIN_MESSAGE);
         }
     }//GEN-LAST:event_openDirectoryOpActionPerformed
 
     private void openFileOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileOpActionPerformed
-        
+
     }//GEN-LAST:event_openFileOpActionPerformed
 
     private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
@@ -298,8 +302,8 @@ public class Fronted extends javax.swing.JFrame {
     }//GEN-LAST:event_formComponentResized
 
     private void formWindowStateChanged(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowStateChanged
-        if(evt.getNewState() == MAXIMIZED_BOTH || evt.getNewState() == MAXIMIZED_HORIZ || 
-                evt.getNewState() == MAXIMIZED_VERT || evt.getNewState() == 0){
+        if (evt.getNewState() == MAXIMIZED_BOTH || evt.getNewState() == MAXIMIZED_HORIZ
+                || evt.getNewState() == MAXIMIZED_VERT || evt.getNewState() == 0) {
             this.resizeComponents();
         }
     }//GEN-LAST:event_formWindowStateChanged
@@ -309,14 +313,14 @@ public class Fronted extends javax.swing.JFrame {
     }//GEN-LAST:event_ClearBtnActionPerformed
 
     private void helpOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpOpActionPerformed
-        JOptionPane.showMessageDialog(null, 
-                "Puedes consultar el manual de usuario en el repositorio de github", 
+        JOptionPane.showMessageDialog(null,
+                "Puedes consultar el manual de usuario en el repositorio de github",
                 "Ayuda", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_helpOpActionPerformed
 
     private void creditsOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_creditsOpActionPerformed
-        JOptionPane.showMessageDialog(null, 
-                "Proyecto creado con un poquito (demasiado) de desesperacion...\n    --Yennifer", 
+        JOptionPane.showMessageDialog(null,
+                "Proyecto creado con un poquito (demasiado) de desesperacion...\n    --Yennifer",
                 "Ayuda", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_creditsOpActionPerformed
 
@@ -336,6 +340,7 @@ public class Fronted extends javax.swing.JFrame {
     private javax.swing.JPanel interfazPanel;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JMenuBar menu;
     private javax.swing.JMenu menuFile;
     private javax.swing.JMenuItem newFileOp;
@@ -345,5 +350,6 @@ public class Fronted extends javax.swing.JFrame {
     private javax.swing.JMenuItem saveAsOp;
     private javax.swing.JMenuItem saveOp;
     private javax.swing.JPanel treeDirectory;
+    private javax.swing.JTree treeDisplay;
     // End of variables declaration//GEN-END:variables
 }

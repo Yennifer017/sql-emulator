@@ -4,6 +4,7 @@ package compi1.sqlemulator.files;
 import compi1.sqlemulator.exceptions.DirectoryException;
 import java.util.List;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import javax.swing.JFileChooser;
@@ -13,11 +14,15 @@ import javax.swing.JFileChooser;
  * @author yenni
  */
 public class DirectoriesUtil {
-    public String getPathFolder(){
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        chooser.showOpenDialog(null);
-        return chooser.getSelectedFile().getAbsolutePath();
+    public String getPathFolder() throws IOException {
+        try {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            chooser.showOpenDialog(null);
+            return chooser.getSelectedFile().getAbsolutePath();
+        } catch (NullPointerException e) {
+            throw new IOException();
+        }
     }
     
     public List<FileProject> openProject(String superPath) throws DirectoryException{
@@ -52,3 +57,4 @@ public class DirectoriesUtil {
         }
     }
 }
+
