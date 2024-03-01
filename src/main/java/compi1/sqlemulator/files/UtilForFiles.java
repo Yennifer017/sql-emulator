@@ -15,11 +15,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  *
  * @author yenni
  */
-public class FilesUtil {
+public class UtilForFiles {
     /**
      * Leer el contenido de un archivo
      * @param path del archivo
      * @return el texto leido
+     * @throws java.io.FileNotFoundException
      */
     public String readTextFile(String path) throws FileNotFoundException, IOException { //obtiene el texto contenido en un archivo y lo devuelve
         String texto = "";
@@ -76,7 +77,7 @@ public class FilesUtil {
     /**
      * Reescribe un archivo a partir de un texto
      * @param texto
-     * @param path
+     * @param ruta
      */
     public void saveFile(String texto, String ruta) { //reescribe un archivo a partir de un texto
             File archivo = new File(ruta); //obtiene el archivo de la ruta
@@ -137,5 +138,14 @@ public class FilesUtil {
             JOptionPane.showMessageDialog(null, "Se ha guardado el archivo", ""
                     + "Guardado exitoso", JOptionPane.INFORMATION_MESSAGE);
         }
+    }
+    
+    public boolean hasAceptedPath(String[] aceptedPaths, File file){
+        for (String aceptedPath : aceptedPaths) {
+            if (file.getName().contains(aceptedPath)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

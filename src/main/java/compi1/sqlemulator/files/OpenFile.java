@@ -43,8 +43,6 @@ public class OpenFile extends JButton implements Comparable<OpenFile> {
                 admi.setCurrentFile(thisOb);
             }
         });
-        
-        
     }
 
     private void reset() {

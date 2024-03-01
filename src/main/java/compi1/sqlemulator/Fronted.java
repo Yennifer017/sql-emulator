@@ -6,14 +6,13 @@ package compi1.sqlemulator;
  */
 import compi1.sqlemulator.exceptions.DirectoryException;
 import compi1.sqlemulator.exceptions.FileException;
+import compi1.sqlemulator.exceptions.FileExtensionException;
 import compi1.sqlemulator.exceptions.FileOpenException;
 import compi1.sqlemulator.exceptions.ProjectOpenException;
 import compi1.sqlemulator.files.AdmiFiles;
 import compi1.sqlemulator.util.NumberLine;
 import java.awt.Dimension;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class Fronted extends javax.swing.JFrame {
@@ -67,7 +66,7 @@ public class Fronted extends javax.swing.JFrame {
 
     private void openProject() {
         try {
-            admiFiles.OpenProject();
+            admiFiles.openProject();
         } catch (ProjectOpenException ex) {
             if (JOptionPane.showConfirmDialog(null, "Deseas cerar el proyecto actual?",
                     "Cerrar proyecto", JOptionPane.YES_NO_OPTION) == 0) {
@@ -351,6 +350,9 @@ public class Fronted extends javax.swing.JFrame {
                     "Hay un archivo o proyecto abierto cierralo y vuelve a intentarlo");
         } catch (IOException ex) {
             System.out.println("Excepcion controlada");
+        } catch (FileExtensionException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "El archivo seleccionado no tiene una extension aceptada por el ide");
         }
         
     }//GEN-LAST:event_openFileOpActionPerformed
@@ -392,6 +394,9 @@ public class Fronted extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "El archivo ya esta abierto");
             } catch (FileException ex){
                 System.out.println("Excepcion controlada");
+            } catch (FileExtensionException ex) {
+                JOptionPane.showMessageDialog(null, 
+                        "El archivo no es compatible con los aceptados por el ide (deber ser .txt o .csv)");
             }
         }
     }//GEN-LAST:event_treeDisplayMouseClicked
