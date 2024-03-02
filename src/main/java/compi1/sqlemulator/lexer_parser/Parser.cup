@@ -38,7 +38,7 @@ parser code {:
 terminal        SELECCIONAR, FILTRAR, INSERTAR, ACTUALIZAR, ASIGNAR, ELIMINAR, EN,
                 PUNTO, ASTERISCO, PARENTESIS_L, PARENTESIS_R, FIN_INSTRUCCION, 
                 IGUAL, MAYOR_QUE, MENOR_QUE, MAYOR_IGUAL_QUE, MENOR_IGUAL_QUE, DIFERENTE,
-                AND, OR, IDENTIFICADOR, VALORES, COMA;
+                AND, OR, IDENTIFICADOR, VALORES, COMA, LEX_ERROR;
 terminal Integer    ENTERO;
 terminal Float      DECIMAL;
 terminal String     CADENA;
@@ -79,7 +79,7 @@ columns ::= IDENTIFICADOR more_columns ;
 more_columns ::= COMA columns 
             | /*empty*/ ;
 
-path ::= IDENTIFICADOR carpetas
+path ::= IDENTIFICADOR carpetas;
 carpetas ::= PUNTO path 
             | /*empty*/;
 

@@ -2,6 +2,7 @@
 package compi1.sqlemulator.lexer_parser;
 
 import java_cup.runtime.*;
+import java.util.*;
 
 %% //separador de area
 
@@ -21,22 +22,52 @@ WhiteSpace = {LineTerminator} | [ \t\f]
 /* constants */
 L=[a-zA-Z_]+
 DecIntegerLiteral = 0 | [1-9][0-9]*
-Identifier = [:jletter:] [:jletterdigit:]*
+Identifier = [:jletter:] ( [:jletterdigit:] | "-" | "_" | "@" | "+" | "*" | "#" )*
 
 
 %{
-  
-  private Symbol symbol(int type) {
-    return new Symbol(type, yyline+1, yycolumn+1);
-  }
+  /*--------------------------------------------
+    CODIGO PARA EL MANEJO DE ERRORES
+  ----------------------------------------------*/
+    private List<String> errorsList;
+    private List<Token> tokenList;
 
-  private Symbol symbol(int type, Object value) {
-    return new Symbol(type, yyline+1, yycolumn+1, value);
-  }
+    public void init(){
+        errorsList = new LinkedList<>();
+        tokenList = new LinkedList<>();
+    }
 
-  private void error(String message) {
-    System.out.println("Error en linea line "+(yyline+1)+", columna "+(yycolumn+1)+" : "+message);
-  }
+    public void reset(){
+        errorsList.clear();
+        tokenList.clear();
+    }
+
+    public List<String> getErrors(){
+        return this.errorsList;
+    }
+
+    public List<Token> getTokens(){
+        return this.tokenList;
+    }
+
+    /*--------------------------------------------
+        CODIGO PARA EL PARSER
+    ----------------------------------------------*/
+    private Symbol symbol(int type) {
+        tokenList.add(new Token(yyline+1, yycolumn+1, type));
+        return new Symbol(type, yyline+1, yycolumn+1);
+    }
+
+    private Symbol symbol(int type, Object value) {
+        tokenList.add(new Token(value, yyline+1, yycolumn+1, type));
+        return new Symbol(type, yyline+1, yycolumn+1, value);
+    }
+
+    private Symbol error(String message) {
+        //System.out.println("Error en la linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + " : "+message);
+        errorsList.add("Error en la linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + " : "+message);
+        return new Symbol(sym.LEX_ERROR, yyline+1, yycolumn+1);
+    }
 
 %}
 
@@ -84,5 +115,5 @@ Identifier = [:jletter:] [:jletterdigit:]*
     {WhiteSpace} 	      {/* ignoramos */}
 
   /* error fallback */
-    [^]             {error("Simbolo invalido <"+ yytext()+">");}
+    .               { return error("Simbolo invalido <"+ yytext()+">");}
     <<EOF>>         { return symbol(sym.EOF); }
