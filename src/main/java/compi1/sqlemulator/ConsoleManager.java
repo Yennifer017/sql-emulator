@@ -35,7 +35,8 @@ public class ConsoleManager {
                 super.insertString(offset, str, a);
                 //srt == caracter ingresado
                 //offset == posicion de donde se ingresa el caracter, su inicio
-                if (str.equals("\n")) {
+                if ( str.contains("\n")&& (str.contains(";") || console.getText().contains(";")) ) {
+                    System.out.println("se ejecuto el metodo de la consola");
                     StringReader reader = new StringReader(console.getText());
                     Lexer lexer = new Lexer(reader);
                     parser parser = new parser(lexer);
@@ -46,6 +47,7 @@ public class ConsoleManager {
                         e.printStackTrace();
                         System.out.println("manejo de exception");
                     } 
+
                 }
             }
 
@@ -55,6 +57,6 @@ public class ConsoleManager {
             }
         };
     }
-;
+    
 
 }

@@ -79,7 +79,7 @@ columns ::= IDENTIFICADOR more_columns ;
 more_columns ::= COMA columns 
             | /*empty*/ ;
 
-path ::= IDENTIFICADOR:id carpetas:more {: System.out.println(more); :};
+path ::= IDENTIFICADOR carpetas
 carpetas ::= PUNTO path 
             | /*empty*/;
 
