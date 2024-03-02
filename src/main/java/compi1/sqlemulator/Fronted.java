@@ -14,13 +14,14 @@ import compi1.sqlemulator.util.NumberLine;
 import java.awt.Dimension;
 import java.io.IOException;
 import javax.swing.JOptionPane;
+import javax.swing.JTextPane;
 
 public class Fronted extends javax.swing.JFrame {
 
     //FIELDS
     private NumberLine numConsole, numDisplayFile;
     private AdmiFiles admiFiles;
-
+    private ConsoleManager consoleManager;
     /**
      * Creates new form Fronted
      */
@@ -29,15 +30,22 @@ public class Fronted extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         initNumeracion();
         initVariables();
+        initConsole();
     }
 
     private void initVariables() {
         admiFiles = new AdmiFiles(treeDisplay, openFilesPanel);
+        consoleManager = new ConsoleManager(console, admiFiles);
     }
 
     private void resizeComponents() {
         treeDirectory.setPreferredSize(new Dimension((int) (0.15 * this.getWidth()), this.getHeight()));
         interfazPanel.setPreferredSize(new Dimension((int) 0.85 * this.getWidth(), this.getHeight()));
+    }
+    
+    private void initConsole(){
+        JTextPane txt = new JTextPane(consoleManager.getNewDoc());
+        console.setStyledDocument(txt.getStyledDocument());
     }
 
     private void initNumeracion() {
@@ -45,6 +53,7 @@ public class Fronted extends javax.swing.JFrame {
         displayScroll.setRowHeaderView(numDisplayFile);
         numConsole = new NumberLine(console);
         consoleScroll.setRowHeaderView(numConsole);
+        numConsole.updateColumna(columnaDisplay);
     }
 
     private void closeProject() {
@@ -112,6 +121,8 @@ public class Fronted extends javax.swing.JFrame {
         ClearBtn = new javax.swing.JButton();
         archivoTxt = new javax.swing.JLabel();
         fileNameDisplay = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        columnaDisplay = new javax.swing.JLabel();
         menu = new javax.swing.JMenuBar();
         projectMenu = new javax.swing.JMenu();
         openDirectoryOp = new javax.swing.JMenuItem();
@@ -173,6 +184,23 @@ public class Fronted extends javax.swing.JFrame {
         console.setBackground(new java.awt.Color(0, 0, 43));
         console.setForeground(new java.awt.Color(234, 234, 234));
         console.setCaretColor(new java.awt.Color(255, 255, 255));
+        console.addCaretListener(new javax.swing.event.CaretListener() {
+            public void caretUpdate(javax.swing.event.CaretEvent evt) {
+                consoleCaretUpdate(evt);
+            }
+        });
+        console.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+                consoleCaretPositionChanged(evt);
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+            }
+        });
+        console.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                consoleKeyTyped(evt);
+            }
+        });
         consoleScroll.setViewportView(console);
 
         openFilesPanel.setBackground(new java.awt.Color(0, 0, 0));
@@ -192,6 +220,12 @@ public class Fronted extends javax.swing.JFrame {
         fileNameDisplay.setForeground(new java.awt.Color(255, 255, 255));
         fileNameDisplay.setText("[none]");
 
+        jLabel1.setForeground(new java.awt.Color(204, 204, 204));
+        jLabel1.setText("Columna:");
+
+        columnaDisplay.setForeground(new java.awt.Color(204, 204, 204));
+        columnaDisplay.setText("0000");
+
         javax.swing.GroupLayout interfazPanelLayout = new javax.swing.GroupLayout(interfazPanel);
         interfazPanel.setLayout(interfazPanelLayout);
         interfazPanelLayout.setHorizontalGroup(
@@ -208,7 +242,10 @@ public class Fronted extends javax.swing.JFrame {
                         .addComponent(fileNameDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(64, 400, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, interfazPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(columnaDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(ClearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -223,7 +260,10 @@ public class Fronted extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(displayScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(ClearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(interfazPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ClearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(columnaDisplay))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(consoleScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -421,6 +461,18 @@ public class Fronted extends javax.swing.JFrame {
         closeProject();
     }//GEN-LAST:event_closeProjectOpActionPerformed
 
+    private void consoleCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_consoleCaretUpdate
+        numConsole.updateColumna(columnaDisplay);
+    }//GEN-LAST:event_consoleCaretUpdate
+
+    private void consoleKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_consoleKeyTyped
+        numConsole.updateColumna(columnaDisplay);
+    }//GEN-LAST:event_consoleKeyTyped
+
+    private void consoleCaretPositionChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_consoleCaretPositionChanged
+        numConsole.updateColumna(columnaDisplay);
+    }//GEN-LAST:event_consoleCaretPositionChanged
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ClearBtn;
@@ -428,6 +480,7 @@ public class Fronted extends javax.swing.JFrame {
     private javax.swing.JMenu Information;
     private javax.swing.JLabel archivoTxt;
     private javax.swing.JMenuItem closeProjectOp;
+    private javax.swing.JLabel columnaDisplay;
     private javax.swing.JTextPane console;
     private javax.swing.JScrollPane consoleScroll;
     private javax.swing.JMenuItem createProyectOp;
@@ -438,6 +491,7 @@ public class Fronted extends javax.swing.JFrame {
     private javax.swing.JLabel fileNameDisplay;
     private javax.swing.JMenuItem helpOp;
     private javax.swing.JPanel interfazPanel;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JMenuBar menu;
     private javax.swing.JMenuItem newFileOp;

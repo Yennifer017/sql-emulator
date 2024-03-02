@@ -3,6 +3,36 @@ package compi1.sqlemulator.lexer_parser;
 
 import java_cup.runtime.*;
 
+/*-----------------------------------------------------------
+  CUP Specification for the Parser Class
+  -----------------------------------------------------------*/
+parser code {:
+    //fields
+    Lexer lex;
+
+    //conect the parser with the lexer
+    public parser(Lexer lex){
+        super(lex);
+    }
+
+    public Lexer getLexer(){
+        return this.lex;
+    }
+    
+    /*SOBREESCRIBIENDO LOS METODOS DE ERROR*/
+    public void syntax_error(Symbol cur_token) {
+        System.out.println("Simbolo con error:" + symbl_name_from_id(cur_token.sym));
+        //System.out.println("Lexema con error: " +  (String) cur_token.value);
+        System.out.println("Linea " + cur_token.left);
+        System.out.println("Columna " + cur_token.right);
+        if (expected_token_ids().isEmpty()) {
+            System.out.println("ya no se esperaba ningun simbolo");
+        }
+    }
+    public void unrecovered_syntax_error(Symbol cur_token) {
+        System.out.println("Error irrecuperable sobrecargado");
+    }
+:}
 
 /* Terminals (tokens returned by the scanner). */
 terminal        SELECCIONAR, FILTRAR, INSERTAR, ACTUALIZAR, ASIGNAR, ELIMINAR, EN,
@@ -35,7 +65,7 @@ instruccion ::= select_stm
                 | insert_stm
                 | update_stm
                 | delete_stm
-                | error                               
+                | error
                 ;
 
 select_stm ::= SELECCIONAR selects EN path filtros_opt FIN_INSTRUCCION;
@@ -49,7 +79,7 @@ columns ::= IDENTIFICADOR more_columns ;
 more_columns ::= COMA columns 
             | /*empty*/ ;
 
-path ::= IDENTIFICADOR carpetas;
+path ::= IDENTIFICADOR:id carpetas:more {: System.out.println(more); :};
 carpetas ::= PUNTO path 
             | /*empty*/;
 

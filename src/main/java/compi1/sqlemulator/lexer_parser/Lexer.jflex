@@ -8,20 +8,22 @@ import java_cup.runtime.*;
 /* opciones y declaraciones de jflex */
 
 %public
+%unicode
 %class Lexer
 %cup
 %line
 %column
 
-LineTerminator = \r|\n|\r\n
+LineTerminator = \r|\n|\r\n 
 
 WhiteSpace = {LineTerminator} | [ \t\f]
 
 /* constants */
+L=[a-zA-Z_]+
 DecIntegerLiteral = 0 | [1-9][0-9]*
 Identifier = [:jletter:] [:jletterdigit:]*
-StringLiteral = '\"'.'\"';
-FloatLiteral = DecIntegerLiteral '.' DecIntegerLiteral;
+
+
 %{
   
   private Symbol symbol(int type) {
@@ -32,10 +34,10 @@ FloatLiteral = DecIntegerLiteral '.' DecIntegerLiteral;
     return new Symbol(type, yyline+1, yycolumn+1, value);
   }
 
-
   private void error(String message) {
     System.out.println("Error en linea line "+(yyline+1)+", columna "+(yycolumn+1)+" : "+message);
   }
+
 %}
 
 %% // separador de areas
@@ -72,15 +74,15 @@ FloatLiteral = DecIntegerLiteral '.' DecIntegerLiteral;
     "AND"           { return symbol(sym.AND); }
     "OR"            { return symbol(sym.OR); }
 
-	/*otras variables*/
-    {DecIntegerLiteral}	{ return symbol(sym.ENTERO, new Integer(yytext()));}
-    {FloatLiteral}	    { return symbol(sym.DECIMAL, new Float(yytext()));}
-    {StringLiteral}	    { return symbol(sym.CADENA, new String(yytext()));}
-    {Identifier}	      { return symbol(sym.IDENTIFICADOR);}
+  /*otras variables*/
+    {DecIntegerLiteral}                 { return symbol(sym.ENTERO, new Integer(yytext()));}
+    {DecIntegerLiteral}"."{DecIntegerLiteral}   { return symbol(sym.DECIMAL, new Float(yytext()));}
+    \"{L}({L}|{DecIntegerLiteral})*\"   { return symbol(sym.CADENA, new String(yytext()));}
+    {Identifier}                        { return symbol(sym.IDENTIFICADOR);}
     
   /*lo ignorado*/
-	  {WhiteSpace} 	      {/* ignoramos */}
+    {WhiteSpace} 	      {/* ignoramos */}
 
   /* error fallback */
-    [^]  {error("Simbolo invalido <"+ yytext()+">");}
-    <<EOF>>   { return symbol(sym.EOF); }
+    [^]             {error("Simbolo invalido <"+ yytext()+">");}
+    <<EOF>>         { return symbol(sym.EOF); }
