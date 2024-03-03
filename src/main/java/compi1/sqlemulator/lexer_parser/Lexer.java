@@ -653,8 +653,9 @@ public class Lexer implements java_cup.runtime.Scanner {
         return new Symbol(type, yyline+1, yycolumn+1, value);
     }
 
-    private void error(String message) {
+    private Symbol error(String message, Object value) {
         errorsList.add("Error en la linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + " : "+message);
+        return new Symbol(sym.LEXER_ERROR, yyline+1, yycolumn+1, value);
     }
 
 
@@ -1085,7 +1086,7 @@ public class Lexer implements java_cup.runtime.Scanner {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { error("Simbolo invalido <"+ yytext()+">");
+            { return error("Simbolo invalido <"+ yytext()+">", yytext());
             }
           // fall through
           case 29: break;

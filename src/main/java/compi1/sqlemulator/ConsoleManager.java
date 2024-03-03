@@ -24,7 +24,7 @@ public class ConsoleManager {
     private JTextPane console;
     private AdmiFiles admiFiles;
     private boolean runningByUser;
-        
+
     public ConsoleManager(JTextPane console, AdmiFiles admiFiles) {
         this.console = console;
         this.admiFiles = admiFiles;
@@ -39,30 +39,9 @@ public class ConsoleManager {
                 super.insertString(offset, str, a);
                 //srt == caracter ingresado
                 //offset == posicion de donde se ingresa el caracter, su inicio
-                if ( str.contains("\n")&& (str.contains(";") || console.getText().contains(";"))
-                        && runningByUser && !console.getText().contains(MSS_FOLLOWING_ERRORS)) {
-                    StringReader reader = new StringReader(console.getText());
-                    Lexer lexer = new Lexer(reader);
-                    lexer.init();
-                    
-                    parser parser = new parser(lexer);
-                    
-                    try {
-                        parser.parse();
-                        if(!lexer.getErrors().isEmpty() || !parser.getSyntaxErrors().isEmpty() ){
-                            runningByUser=false;
-                            String content = console.getText();
-                            content += "\n" + MSS_FOLLOWING_ERRORS; 
-                            content += showErrors("ERRORES LEXICOS", lexer.getErrors());
-                            content += showErrors("ERRORES SINTACTICOS", parser.getSyntaxErrors());
-                            console.setText(content);
-                            runningByUser = true;
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        System.out.println("manejo de exception");
-                    } 
-                    
+                if (str.contains("\n") && (str.contains(";") || console.getText().contains(";"))
+                        && (!console.getText().contains(MSS_FOLLOWING_ERRORS)) && runningByUser) {
+                    translateSteps(str);
                 }
             }
 
@@ -72,21 +51,47 @@ public class ConsoleManager {
             }
         };
     }
-    
-    private String showErrors(String mss, List<String> errors){
+
+    private void translateSteps(String str) {
+        if (str.contains("\n") && (str.contains(";") || console.getText().contains(";"))
+                && (!console.getText().contains(MSS_FOLLOWING_ERRORS)) && runningByUser) {
+            StringReader reader = new StringReader(console.getText());
+            Lexer lexer = new Lexer(reader);
+            lexer.init();
+
+            parser parser = new parser(lexer);
+
+            try {
+                parser.parse();
+                if (!lexer.getErrors().isEmpty() || !parser.getSyntaxErrors().isEmpty()) {
+                    runningByUser = false;
+                    String content = console.getText();
+                    content += "\n" + MSS_FOLLOWING_ERRORS;
+                    content += showErrors("ERRORES LEXICOS", lexer.getErrors());
+                    content += showErrors("ERRORES SINTACTICOS", parser.getSyntaxErrors());
+                    console.setText(content);
+                    runningByUser = true;
+                } else { //cuando se puede realizar alguna accion
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("manejo de exception");
+            }
+        }
+    }
+
+    private String showErrors(String mss, List<String> errors) {
         String content = "--------------------------------------------\n" + mss + "\n";
-        if(errors.size() == 0 ){
-            content+= "     __ningun_error__\n";
-        }else{
+        if (errors.size() == 0) {
+            content += "     __ningun_error__\n";
+        } else {
             for (int i = 0; i < errors.size(); i++) {
                 content += errors.get(i);
                 content += "\n";
             }
         }
-        
         return content;
     }
-    
-    
 
 }

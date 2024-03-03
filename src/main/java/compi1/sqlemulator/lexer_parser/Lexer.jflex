@@ -63,8 +63,9 @@ Identifier = [:jletter:] ( [:jletterdigit:] | "-" | "_" | "@" | "+" | "*" | "#" 
         return new Symbol(type, yyline+1, yycolumn+1, value);
     }
 
-    private void error(String message) {
+    private Symbol error(String message, Object value) {
         errorsList.add("Error en la linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + " : "+message);
+        return new Symbol(sym.LEXER_ERROR, yyline+1, yycolumn+1, value);
     }
 
 %}
@@ -113,5 +114,5 @@ Identifier = [:jletter:] ( [:jletterdigit:] | "-" | "_" | "@" | "+" | "*" | "#" 
     {WhiteSpace} 	      {/* ignoramos */}
 
   /* error fallback */
-    .               { error("Simbolo invalido <"+ yytext()+">");}
+    .               { return error("Simbolo invalido <"+ yytext()+">", yytext());}
     <<EOF>>         { return symbol(sym.EOF); }

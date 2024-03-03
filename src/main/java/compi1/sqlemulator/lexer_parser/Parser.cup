@@ -34,19 +34,11 @@ parser code {:
                     + ", columna: " + cur_token.right;
         if (expected_token_ids().isEmpty()) {
             mss += " -- ya no se esperaba ningun simbolo";
-        }else{
-            mss += " -- se esperaba ";
-            for(int i=0; i<expected_token_ids().size(); i++){
-                mss += symbl_name_from_id(expected_token_ids().get(i));
-                if(! (i== expected_token_ids().size() - 1) ){
-                    mss = ",";
-                }
-            }
         }
         syntaxErrors.add(mss);
     }
     public void unrecovered_syntax_error(Symbol cur_token) {
-        syntaxErrors.add("Error de sintaxis severos detectados, revisa municiosamente el codigo");
+        syntaxErrors.add("Errores de sintaxis severos detectados, revisa municiosamente el codigo");
     }
 :}
 
@@ -54,7 +46,7 @@ parser code {:
 terminal        SELECCIONAR, FILTRAR, INSERTAR, ACTUALIZAR, ASIGNAR, ELIMINAR, EN,
                 PUNTO, ASTERISCO, PARENTESIS_L, PARENTESIS_R, FIN_INSTRUCCION, 
                 IGUAL, MAYOR_QUE, MENOR_QUE, MAYOR_IGUAL_QUE, MENOR_IGUAL_QUE, DIFERENTE,
-                AND, OR, IDENTIFICADOR, VALORES, COMA;
+                AND, OR, IDENTIFICADOR, VALORES, COMA, LEXER_ERROR;
 terminal Integer    ENTERO;
 terminal Float      DECIMAL;
 terminal String     CADENA;
@@ -81,7 +73,6 @@ instruccion ::= select_stm
                 | insert_stm
                 | update_stm
                 | delete_stm
-                | error
                 ;
 
 select_stm ::= SELECCIONAR selects EN path filtros_opt FIN_INSTRUCCION;
