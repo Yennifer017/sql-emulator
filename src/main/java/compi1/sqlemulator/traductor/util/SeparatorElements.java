@@ -1,8 +1,8 @@
-
 package compi1.sqlemulator.traductor.util;
 
 import compi1.sqlemulator.lexer_parser.Token;
 import compi1.sqlemulator.lexer_parser.sym;
+import compi1.sqlemulator.traductor.components.Condition;
 import compi1.sqlemulator.traductor.components.Filtro;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,22 +12,23 @@ import java.util.List;
  * @author yenni
  */
 public class SeparatorElements {
-    public String separatePath(List<Token> tokens, Index currentPos){
+
+    public String separatePath(List<Token> tokens, Index currentPos) {
         String path = "";
         int typeTkn = tokens.get(currentPos.getNum()).getType();
-        while (typeTkn == sym.IDENTIFICADOR || typeTkn == sym.PUNTO) {            
+        while (typeTkn == sym.IDENTIFICADOR || typeTkn == sym.PUNTO) {
             path += tokens.get(currentPos.getNum()).getLexem().toString();
             currentPos.increment();
             typeTkn = tokens.get(currentPos.getNum()).getType();
         }
         return path;
     }
-    
-    public List<Token> separateColumns(List<Token> tokens, Index currentPos){
+
+    public List<Token> separateColumns(List<Token> tokens, Index currentPos) {
         List<Token> columns = new ArrayList<>();
         int typeTkn = tokens.get(currentPos.getNum()).getType();
-        while (typeTkn == sym.IDENTIFICADOR || typeTkn == sym.COMA || typeTkn == sym.ASTERISCO) {            
-            if(typeTkn == sym.IDENTIFICADOR){
+        while (typeTkn == sym.IDENTIFICADOR || typeTkn == sym.COMA || typeTkn == sym.ASTERISCO) {
+            if (typeTkn == sym.IDENTIFICADOR) {
                 columns.add(tokens.get(currentPos.getNum()));
             }
             currentPos.increment();
@@ -35,18 +36,39 @@ public class SeparatorElements {
         }
         return columns;
     }
-    
-    public Filtro separateConditions(List<Token> tokens, Index currentPos){
-        Filtro filtro  = new Filtro();
-        
+
+    public Filtro separateConditions(List<Token> tokens, Index currentPos) {
+        Filtro filtro = new Filtro();
+        int auxiliarIndex = 1;
+        boolean firstTime = true;
+        Condition currentCondition = new Condition();
         int typeTkn = tokens.get(currentPos.getNum()).getType();
-        while (typeTkn != sym.FIN_INSTRUCCION) {            
-            //TODO: completar el metodo
+        while (typeTkn != sym.FIN_INSTRUCCION) {
+            if (auxiliarIndex == 4) {
+                filtro.addConditon(currentCondition);
+                currentCondition = new Condition();
+                if (firstTime) {
+                    firstTime = false;
+                    filtro.setCodeLogicRelational(typeTkn);
+                }
+                auxiliarIndex = 1;
+                currentPos.increment(); //para que se "reinicie el ciclo"
+            }
+            switch (auxiliarIndex) {
+                case 1 ->
+                    currentCondition.setNameColumnTkn(tokens.get(currentPos.getNum()));
+                case 2 ->
+                    currentCondition.setCodeRelationalOp(
+                            tokens.get(currentPos.getNum()).getType());
+                case 3 ->
+                    currentCondition.setComparableTkn(tokens.get(currentPos.getNum()));
+            }
+            auxiliarIndex++;
             currentPos.increment();
             typeTkn = tokens.get(currentPos.getNum()).getType();
         }
+        filtro.addConditon(currentCondition);
         return filtro;
     }
-    
-    
+
 }

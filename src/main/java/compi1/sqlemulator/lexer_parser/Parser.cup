@@ -56,18 +56,21 @@ non terminal    relational_operator, values, instruccion, select_stm, insert_stm
                 delete_stm, columns, path, filtros_opt, columns_opt, asignations, 
                 more_columns, carpetas, filtros, conditions, condition, logic, and_stm, or_stm,
                 comparable, insertables, more_insertables, more_asignations,
-                and_stm2, or_stm2, selects;
-
+                and_stm2, or_stm2, selects, instrucciones, more_instruccions;
 
 
 /* The grammar */
 
 
-start with instruccion;
+start with instrucciones;
 
 /* no terminales que derivan en terminales*/
 relational_operator ::= MAYOR_QUE | IGUAL | MENOR_QUE | MAYOR_IGUAL_QUE | MENOR_IGUAL_QUE | DIFERENTE;
 values ::= CADENA | ENTERO | DECIMAL;
+
+instrucciones ::= instruccion FIN_INSTRUCCION more_instruccions;
+
+more_instruccions ::= instrucciones | /*empty*/;
 
 instruccion ::= select_stm     
                 | insert_stm
@@ -75,10 +78,10 @@ instruccion ::= select_stm
                 | delete_stm
                 ;
 
-select_stm ::= SELECCIONAR selects EN path filtros_opt FIN_INSTRUCCION;
-insert_stm ::= INSERTAR EN path columns_opt VALORES PARENTESIS_L insertables PARENTESIS_R FIN_INSTRUCCION;
-update_stm ::= ACTUALIZAR EN path ASIGNAR asignations filtros_opt FIN_INSTRUCCION;
-delete_stm ::= ELIMINAR EN path filtros_opt FIN_INSTRUCCION;
+select_stm ::= SELECCIONAR selects EN path filtros_opt;
+insert_stm ::= INSERTAR EN path columns_opt VALORES PARENTESIS_L insertables PARENTESIS_R;
+update_stm ::= ACTUALIZAR EN path ASIGNAR asignations filtros_opt;
+delete_stm ::= ELIMINAR EN path filtros_opt;
 
 selects ::= ASTERISCO 
             | columns ;

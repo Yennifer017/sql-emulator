@@ -40,7 +40,7 @@ public class ConsoleManager {
             @Override
             public void insertString(int offset, String str, AttributeSet a) throws BadLocationException {
                 super.insertString(offset, str, a);
-                //srt == caracter ingresado
+                //srt == lo ingresado
                 //offset == posicion de donde se ingresa el caracter, su inicio
                 if (str.contains("\n") && (str.contains(";") || console.getText().contains(";"))
                         && (!console.getText().contains(MSS_FOLLOWING_ERRORS)) && runningByUser) {

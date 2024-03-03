@@ -107,7 +107,7 @@ Identifier = [:jletter:] ( [:jletterdigit:] | "-" | "_" | "@" | "+" | "*" | "#" 
   /*otras variables*/
     {DecIntegerLiteral}                         { return symbol(sym.ENTERO, new Integer(yytext()));}
     {DecIntegerLiteral}"."{DecIntegerLiteral}   { return symbol(sym.DECIMAL, new Float(yytext()));}
-    \"(.)*\"                                    { return symbol(sym.CADENA, new String(yytext()));}
+    \"({L}|{DecIntegerLiteral}|" ")*\"              { return symbol(sym.CADENA, new String(yytext()));}
     {Identifier}                                { return symbol(sym.IDENTIFICADOR, yytext() );}
      
   /*lo ignorado*/

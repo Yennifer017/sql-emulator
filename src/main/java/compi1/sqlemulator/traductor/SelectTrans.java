@@ -50,8 +50,8 @@ public class SelectTrans extends TranslatorStm{
         model.setPath(new PathProject(  //guardar path
                 separator.separatePath(tokens, index), 
                 firstTkn.getColumn(), firstTkn.getLine()));
-        index.increment(); //para ir al token ; o al FILTRAR
         if(tokens.get(index.getNum()).getType() == sym.FILTRAR){
+            index.increment(); //para pasar al siguiente token, luego de filtrar
             model.setFiltro(separator.separateConditions(tokens, index));
         }
         index.increment(); //para salir de la instruccion

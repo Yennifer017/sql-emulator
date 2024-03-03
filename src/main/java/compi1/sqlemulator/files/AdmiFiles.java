@@ -174,15 +174,19 @@ public class AdmiFiles {
     }
 
     private void closeFileInProject() throws FileException {
-        int position = BinarySearch.search(openFiles, currentFile.getFile().getAbsolutePath());
-        if (position != -1) {
-            openFiles.remove(position);
-            filesBar.remove(currentFile);
-            filesBar.revalidate();
-            filesBar.repaint();
-            currentFile = null;
-            displayContent.setText("");
-            labelForFileName.setText(EMPTY_NOTATION);
+        if (currentFile != null) {
+            int position = BinarySearch.search(openFiles, currentFile.getFile().getAbsolutePath());
+            if (position != -1) {
+                openFiles.remove(position);
+                filesBar.remove(currentFile);
+                filesBar.revalidate();
+                filesBar.repaint();
+                currentFile = null;
+                displayContent.setText("");
+                labelForFileName.setText(EMPTY_NOTATION);
+            } else {
+                throw new FileException();
+            }
         } else {
             throw new FileException();
         }
@@ -275,9 +279,9 @@ public class AdmiFiles {
             File file = new File(realPath);
             if (file.exists() && file.isFile()) {
                 int index = BinarySearch.search(openFiles, file.getAbsolutePath());
-                if( index == -1){
+                if (index == -1) {
                     openProjectFile(file);
-                }else if(index >= 0){
+                } else if (index >= 0) {
                     openFiles.get(index).executeAction(displayContent, labelForFileName, this);
                 }
             } else {
