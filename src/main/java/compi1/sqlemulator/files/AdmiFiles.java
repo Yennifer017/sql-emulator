@@ -3,6 +3,7 @@ package compi1.sqlemulator.files;
 import compi1.sqlemulator.exceptions.DirectoryException;
 import compi1.sqlemulator.exceptions.FileException;
 import compi1.sqlemulator.exceptions.FileExtensionException;
+import compi1.sqlemulator.exceptions.FileNotFoundEx;
 import compi1.sqlemulator.exceptions.FileOpenException;
 import compi1.sqlemulator.exceptions.ProjectOpenException;
 import compi1.sqlemulator.util.BinarySearch;
@@ -38,14 +39,18 @@ public class AdmiFiles {
 
     private JTree treeDisplay;
     private JPanel filesBar;
+    private JTextPane displayContent;
+    private JLabel labelForFileName;
 
-    public AdmiFiles(JTree treeDisplay, JPanel filesBar) {
+    public AdmiFiles(JTree treeDisplay, JPanel filesBar, JTextPane displayContent, JLabel labelForFileName) {
         this.treeDisplay = treeDisplay;
         this.filesU = new UtilForFiles();
         this.directoryU = new UtilForDirectories();
         currentProject = new LinkedList<>();
         openFiles = new ArrayList<>();
         this.filesBar = filesBar;
+        this.displayContent = displayContent;
+        this.labelForFileName = labelForFileName;
         creatorFile = new CreatorFileIDE();
     }
 
@@ -106,17 +111,15 @@ public class AdmiFiles {
     /**
      * Abre un archivo al tener seleccionado un elemento del arbol de trabajo
      *
-     * @param display
-     * @param labelForName
      * @throws java.io.IOException
      * @throws compi1.sqlemulator.exceptions.FileOpenException
      * @throws compi1.sqlemulator.exceptions.FileException
      * @throws compi1.sqlemulator.exceptions.FileExtensionException
      */
-    public void openFileFromProject(JTextPane display, JLabel labelForName)
+    public void openFileFromProject()
             throws IOException, FileOpenException, FileException, FileExtensionException {
         if (currentFile != null) {
-            currentFile.setOpenContent(display.getText());
+            currentFile.setOpenContent(displayContent.getText());
         }
         DefaultMutableTreeNode selectedNode
                 = (DefaultMutableTreeNode) treeDisplay.getLastSelectedPathComponent();
@@ -130,15 +133,7 @@ public class AdmiFiles {
             if (file.isFile() // y el archivo no esta abierto aun
                     && BinarySearch.search(openFiles, file.getAbsolutePath()) == -1
                     && isAceptedExtension) {
-                String content = filesU.readTextFile(file.getAbsolutePath());
-                currentFile = new OpenFile(file, content);
-                openFiles.add(currentFile);
-                Collections.sort(openFiles);
-                display.setText(filesU.readTextFile(file.getAbsolutePath()));
-                labelForName.setText(file.getName());
-                //anadir los botones
-                currentFile.init(display, labelForName, this);
-                filesBar.add(currentFile);
+                openProjectFile(file);
             } else if (file.isFile() && isAceptedExtension) { //cuando ya esta abierto
                 throw new FileOpenException();
             } else if (!isAceptedExtension && !file.isDirectory()) {
@@ -147,15 +142,25 @@ public class AdmiFiles {
         }
     }
 
+    private void openProjectFile(File file) throws IOException {
+        String content = filesU.readTextFile(file.getAbsolutePath());
+        currentFile = new OpenFile(file, content);
+        openFiles.add(currentFile);
+        Collections.sort(openFiles);
+        displayContent.setText(filesU.readTextFile(file.getAbsolutePath()));
+        labelForFileName.setText(file.getName());
+        //anadir los botones
+        currentFile.init(displayContent, labelForFileName, this);
+        filesBar.add(currentFile);
+    }
+
     /**
      * Ciera el proyecto actual
      *
-     * @param display
-     * @param labelForName
      * @throws compi1.sqlemulator.exceptions.DirectoryException cuando no hay un
      * proyecto abierto
      */
-    public void closeProject(JTextPane display, JLabel labelForName) throws DirectoryException {
+    public void closeProject() throws DirectoryException {
         if (currentProject.isEmpty()) {
             throw new DirectoryException();
         } else {
@@ -164,11 +169,11 @@ public class AdmiFiles {
             treeDisplay.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("root")));
             treeDisplay.revalidate();
             treeDisplay.repaint();
-            closeOpenFiles(display, labelForName);
+            closeOpenFiles();
         }
     }
 
-    private void closeFileInProject(JTextPane display, JLabel labelForName) throws FileException {
+    private void closeFileInProject() throws FileException {
         int position = BinarySearch.search(openFiles, currentFile.getFile().getAbsolutePath());
         if (position != -1) {
             openFiles.remove(position);
@@ -176,38 +181,37 @@ public class AdmiFiles {
             filesBar.revalidate();
             filesBar.repaint();
             currentFile = null;
-            display.setText("");
-            labelForName.setText(EMPTY_NOTATION);
+            displayContent.setText("");
+            labelForFileName.setText(EMPTY_NOTATION);
         } else {
             throw new FileException();
         }
     }
 
-    public void closeFile(JTextPane display, JLabel labelForName) throws FileException {
+    public void closeFile() throws FileException {
         if (!currentProject.isEmpty()) {
-            closeFileInProject(display, labelForName);
+            closeFileInProject();
         } else if (currentFile != null) {
-            closeOpenFiles(display, labelForName);
+            closeOpenFiles();
         }
     }
 
-    public void closeOpenFiles(JTextPane display, JLabel labelForName) {
+    public void closeOpenFiles() {
         filesBar.removeAll();
         filesBar.revalidate();
         filesBar.repaint();
         openFiles.clear();
         currentFile = null;
-        display.setText("");
-        labelForName.setText(EMPTY_NOTATION);
+        displayContent.setText("");
+        labelForFileName.setText(EMPTY_NOTATION);
     }
 
     /**
      * Guarda el archivo actual
      *
-     * @param displayContent donde se tiene escrito el texto
      * @throws compi1.sqlemulator.exceptions.FileException
      */
-    public void saveFile(JTextPane displayContent) throws FileException {
+    public void saveFile() throws FileException {
         if (currentFile != null) {
             filesU.saveFile(displayContent.getText(), currentFile.getFile());
         } else {
@@ -218,14 +222,12 @@ public class AdmiFiles {
     /**
      * Abre un archivo cuando no hay un proyecto abierto
      *
-     * @param display para setear el nombre del archivo
-     * @param displayName
      * @throws compi1.sqlemulator.exceptions.ProjectOpenException cuando hay un
      * proyecto abierto
      * @throws java.io.IOException por cualquier excepcion extra
      * @throws compi1.sqlemulator.exceptions.FileExtensionException
      */
-    public void openFile(JTextPane display, JLabel displayName)
+    public void openFile()
             throws ProjectOpenException, IOException, FileExtensionException {
         if (!currentProject.isEmpty() || currentFile != null) {
             throw new ProjectOpenException();
@@ -236,24 +238,57 @@ public class AdmiFiles {
                 throw new FileExtensionException();
             }
             String content = filesU.readTextFile(file.getAbsolutePath());
-            display.setText(content);
-            displayName.setText(file.getName());
+            displayContent.setText(content);
+            this.labelForFileName.setText(file.getName());
             currentFile = new OpenFile(file, content);
         }
     }
 
-    public boolean exist(String pathWithDots) {
+    private String convertToAbsolutePath(String path) {
         try {
-            String path = pathWithDots.replace(".", directoryU.getCarpetSeparator());
+            path = path.replace(".", directoryU.getCarpetSeparator());
             DefaultTreeModel model = (DefaultTreeModel) treeDisplay.getModel();
             DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
             FileProject rootNode = (FileProject) root.getUserObject();
             String rootPath = rootNode.getFile().getAbsolutePath();
             rootPath = rootPath.substring(0, rootPath.length() - rootNode.getFile().getName().length());
-            File searched = new File(rootPath + path + ".csv");
-            return searched.exists() && searched.isFile();
+            return rootPath + path + ".csv";
         } catch (Exception e) {
-            return false;
+            return path;
+        }
+    }
+
+    /**
+     * Este metodo ayuda a trabajar sobre el archivo real del que se quiere
+     * operar
+     *
+     * @param pathWithDots
+     * @throws compi1.sqlemulator.exceptions.DirectoryException
+     * @throws compi1.sqlemulator.exceptions.FileNotFoundEx
+     * @throws java.io.IOException
+     */
+    public void openFile(String pathWithDots) throws DirectoryException, FileNotFoundEx, IOException {
+        String path = pathWithDots.replace(".", directoryU.getCarpetSeparator());
+        path += ".csv";
+        if (!currentProject.isEmpty()) { //si esta abierto un proyecto
+            String realPath = convertToAbsolutePath(pathWithDots);
+            File file = new File(realPath);
+            if (file.exists() && file.isFile()) {
+                int index = BinarySearch.search(openFiles, file.getAbsolutePath());
+                if( index == -1){
+                    openProjectFile(file);
+                }else if(index >= 0){
+                    openFiles.get(index).executeAction(displayContent, labelForFileName, this);
+                }
+            } else {
+                throw new FileNotFoundEx();
+            }
+        } else if (currentProject.isEmpty() && currentFile != null) { //cuando solo es un archivo y esta abierto
+            if (!currentFile.getName().equals(path)) {
+                throw new FileNotFoundEx();
+            }
+        } else { //cuando no hay un archivo abierto
+            throw new DirectoryException();
         }
     }
 

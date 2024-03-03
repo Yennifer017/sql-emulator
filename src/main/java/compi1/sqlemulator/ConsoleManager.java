@@ -3,6 +3,7 @@ package compi1.sqlemulator;
 import compi1.sqlemulator.files.AdmiFiles;
 import compi1.sqlemulator.lexer_parser.Lexer;
 import compi1.sqlemulator.lexer_parser.parser;
+import compi1.sqlemulator.traductor.Translator;
 import java.io.StringReader;
 import java.util.List;
 import javax.swing.JTextPane;
@@ -24,11 +25,13 @@ public class ConsoleManager {
     private JTextPane console;
     private AdmiFiles admiFiles;
     private boolean runningByUser;
+    private Translator translator;
 
     public ConsoleManager(JTextPane console, AdmiFiles admiFiles) {
         this.console = console;
         this.admiFiles = admiFiles;
         this.runningByUser = true;
+        this.translator = new Translator(admiFiles);
     }
 
     public DefaultStyledDocument getNewDoc() {
@@ -44,7 +47,6 @@ public class ConsoleManager {
                     translateSteps(str);
                 }
             }
-
             @Override
             public void remove(int offs, int len) throws BadLocationException {
                 super.remove(offs, len);
@@ -72,7 +74,7 @@ public class ConsoleManager {
                     console.setText(content);
                     runningByUser = true;
                 } else { //cuando se puede realizar alguna accion
-
+                    System.out.println(translator.translateCode(lexer.getTokens()));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -83,7 +85,7 @@ public class ConsoleManager {
 
     private String showErrors(String mss, List<String> errors) {
         String content = "--------------------------------------------\n" + mss + "\n";
-        if (errors.size() == 0) {
+        if (errors.isEmpty()) {
             content += "     __ningun_error__\n";
         } else {
             for (int i = 0; i < errors.size(); i++) {

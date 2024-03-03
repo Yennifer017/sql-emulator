@@ -105,10 +105,10 @@ Identifier = [:jletter:] ( [:jletterdigit:] | "-" | "_" | "@" | "+" | "*" | "#" 
     "OR"            { return symbol(sym.OR, yytext()); }
 
   /*otras variables*/
-    {DecIntegerLiteral}                 { return symbol(sym.ENTERO, new Integer(yytext()));}
+    {DecIntegerLiteral}                         { return symbol(sym.ENTERO, new Integer(yytext()));}
     {DecIntegerLiteral}"."{DecIntegerLiteral}   { return symbol(sym.DECIMAL, new Float(yytext()));}
-    \"(.)*\"   { return symbol(sym.CADENA, new String(yytext()));}
-    {Identifier}                        { return symbol(sym.IDENTIFICADOR, yytext() );}
+    \"(.)*\"                                    { return symbol(sym.CADENA, new String(yytext()));}
+    {Identifier}                                { return symbol(sym.IDENTIFICADOR, yytext() );}
      
   /*lo ignorado*/
     {WhiteSpace} 	      {/* ignoramos */}

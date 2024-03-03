@@ -27,7 +27,7 @@ public class OpenFile extends JButton implements Comparable<OpenFile> {
         return this.file.getAbsolutePath().compareTo(o.getFile().getAbsolutePath());
     }
 
-    public void init(JTextPane displayContent, JLabel displayName, final AdmiFiles admi ) {
+    public void init(JTextPane displayContent, JLabel displayName, final AdmiFiles admi) {
         this.reset();
         this.setText(file.getName());
         final OpenFile thisOb = this;
@@ -35,7 +35,7 @@ public class OpenFile extends JButton implements Comparable<OpenFile> {
             @Override
             public void actionPerformed(ActionEvent e) { //anadimos el evento de los botones
                 OpenFile lastOpen = admi.getCurrentFile();
-                if(lastOpen!= null){
+                if (lastOpen != null) {
                     lastOpen.setOpenContent(displayContent.getText());
                 }
                 displayContent.setText(openContent);
@@ -43,6 +43,16 @@ public class OpenFile extends JButton implements Comparable<OpenFile> {
                 admi.setCurrentFile(thisOb);
             }
         });
+    }
+
+    public void executeAction(JTextPane displayContent, JLabel displayName, final AdmiFiles admi) {
+        OpenFile lastOpen = admi.getCurrentFile();
+        if (lastOpen != null) {
+            lastOpen.setOpenContent(displayContent.getText());
+        }
+        displayContent.setText(openContent);
+        displayName.setText(file.getName());
+        admi.setCurrentFile(this);
     }
 
     private void reset() {

@@ -38,7 +38,8 @@ public class Fronted extends javax.swing.JFrame {
     }
 
     private void initVariables() {
-        admiFiles = new AdmiFiles(treeDisplay, openFilesPanel);
+        admiFiles = new AdmiFiles(treeDisplay, openFilesPanel, 
+                display, fileNameDisplay);
         consoleManager = new ConsoleManager(console, admiFiles);
     }
 
@@ -62,7 +63,7 @@ public class Fronted extends javax.swing.JFrame {
 
     private void closeProject() {
         try {
-            admiFiles.closeProject(display, fileNameDisplay);
+            admiFiles.closeProject();
             display.setText("");
         } catch (DirectoryException ex) {
             System.out.println("Excepcion de directorio controlada");
@@ -71,7 +72,7 @@ public class Fronted extends javax.swing.JFrame {
 
     private void closeFile() {
         try {
-            admiFiles.closeFile(display, fileNameDisplay);
+            admiFiles.closeFile();
         } catch (FileException ex1) {
             showInesperatedError();
         }
@@ -388,7 +389,7 @@ public class Fronted extends javax.swing.JFrame {
 
     private void openFileOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileOpActionPerformed
         try {
-            admiFiles.openFile(display, fileNameDisplay);
+            admiFiles.openFile();
         } catch (ProjectOpenException ex) {
             JOptionPane.showMessageDialog(null,
                     "Hay un archivo o proyecto abierto cierralo y vuelve a intentarlo");
@@ -431,7 +432,7 @@ public class Fronted extends javax.swing.JFrame {
     private void treeDisplayMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treeDisplayMouseClicked
         if (evt.getClickCount() == 2) {
             try {
-                admiFiles.openFileFromProject(display, fileNameDisplay);
+                admiFiles.openFileFromProject();
             } catch (IOException ex) {
                 showInesperatedError();
             } catch (FileOpenException ex) {
@@ -447,7 +448,7 @@ public class Fronted extends javax.swing.JFrame {
 
     private void saveOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveOpActionPerformed
         try {
-            admiFiles.saveFile(display);
+            admiFiles.saveFile();
         } catch (FileException ex) {
             JOptionPane.showMessageDialog(null, "No se pudo guardar el archivo :/");
         }
