@@ -10,9 +10,12 @@ import compi1.sqlemulator.exceptions.FileExtensionException;
 import compi1.sqlemulator.exceptions.FileOpenException;
 import compi1.sqlemulator.exceptions.ProjectOpenException;
 import compi1.sqlemulator.files.AdmiFiles;
+import compi1.sqlemulator.lexer_parser.Lexer;
+import compi1.sqlemulator.lexer_parser.parser;
 import compi1.sqlemulator.util.NumberLine;
 import java.awt.Dimension;
 import java.io.IOException;
+import java.io.StringReader;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 
@@ -22,6 +25,7 @@ public class Fronted extends javax.swing.JFrame {
     private NumberLine numConsole, numDisplayFile;
     private AdmiFiles admiFiles;
     private ConsoleManager consoleManager;
+
     /**
      * Creates new form Fronted
      */
@@ -42,8 +46,8 @@ public class Fronted extends javax.swing.JFrame {
         treeDirectory.setPreferredSize(new Dimension((int) (0.15 * this.getWidth()), this.getHeight()));
         interfazPanel.setPreferredSize(new Dimension((int) 0.85 * this.getWidth(), this.getHeight()));
     }
-    
-    private void initConsole(){
+
+    private void initConsole() {
         JTextPane txt = new JTextPane(consoleManager.getNewDoc());
         console.setStyledDocument(txt.getStyledDocument());
     }
@@ -258,14 +262,14 @@ public class Fronted extends javax.swing.JFrame {
                     .addComponent(fileNameDisplay)
                     .addComponent(archivoTxt))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(displayScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(displayScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(interfazPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ClearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1)
                     .addComponent(columnaDisplay))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(consoleScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(consoleScroll)
                 .addContainerGap())
         );
 
@@ -386,7 +390,7 @@ public class Fronted extends javax.swing.JFrame {
         try {
             admiFiles.openFile(display, fileNameDisplay);
         } catch (ProjectOpenException ex) {
-            JOptionPane.showMessageDialog(null, 
+            JOptionPane.showMessageDialog(null,
                     "Hay un archivo o proyecto abierto cierralo y vuelve a intentarlo");
         } catch (IOException ex) {
             System.out.println("Excepcion controlada");
@@ -394,7 +398,7 @@ public class Fronted extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null,
                     "El archivo seleccionado no tiene una extension aceptada por el ide");
         }
-        
+
     }//GEN-LAST:event_openFileOpActionPerformed
 
     private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
@@ -432,10 +436,10 @@ public class Fronted extends javax.swing.JFrame {
                 showInesperatedError();
             } catch (FileOpenException ex) {
                 JOptionPane.showMessageDialog(null, "El archivo ya esta abierto");
-            } catch (FileException ex){
+            } catch (FileException ex) {
                 System.out.println("Excepcion controlada");
             } catch (FileExtensionException ex) {
-                JOptionPane.showMessageDialog(null, 
+                JOptionPane.showMessageDialog(null,
                         "El archivo no es compatible con los aceptados por el ide (deber ser .txt o .csv)");
             }
         }

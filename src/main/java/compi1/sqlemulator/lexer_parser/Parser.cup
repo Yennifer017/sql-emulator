@@ -2,6 +2,7 @@
 package compi1.sqlemulator.lexer_parser;
 
 import java_cup.runtime.*;
+import java.util.*;
 
 /*-----------------------------------------------------------
   CUP Specification for the Parser Class
@@ -9,28 +10,43 @@ import java_cup.runtime.*;
 parser code {:
     //fields
     Lexer lex;
+    private List<String> syntaxErrors;
+
 
     //conect the parser with the lexer
     public parser(Lexer lex){
         super(lex);
+        syntaxErrors = new LinkedList<>();
     }
 
+    //getters
     public Lexer getLexer(){
         return this.lex;
+    }
+    public List<String> getSyntaxErrors(){
+        return this.syntaxErrors;
     }
     
     /*SOBREESCRIBIENDO LOS METODOS DE ERROR*/
     public void syntax_error(Symbol cur_token) {
-        System.out.println("Simbolo con error:" + symbl_name_from_id(cur_token.sym));
-        //System.out.println("Lexema con error: " +  (String) cur_token.value);
-        System.out.println("Linea " + cur_token.left);
-        System.out.println("Columna " + cur_token.right);
+        String mss = "Simbolo: " + symbl_name_from_id(cur_token.sym)
+                    + ", linea: " + cur_token.left
+                    + ", columna: " + cur_token.right;
         if (expected_token_ids().isEmpty()) {
-            System.out.println("ya no se esperaba ningun simbolo");
+            mss += " -- ya no se esperaba ningun simbolo";
+        }else{
+            mss += " -- se esperaba ";
+            for(int i=0; i<expected_token_ids().size(); i++){
+                mss += symbl_name_from_id(expected_token_ids().get(i));
+                if(! (i== expected_token_ids().size() - 1) ){
+                    mss = ",";
+                }
+            }
         }
+        syntaxErrors.add(mss);
     }
     public void unrecovered_syntax_error(Symbol cur_token) {
-        System.out.println("Error irrecuperable sobrecargado");
+        syntaxErrors.add("Error de sintaxis severos detectados, revisa municiosamente el codigo");
     }
 :}
 
@@ -38,13 +54,13 @@ parser code {:
 terminal        SELECCIONAR, FILTRAR, INSERTAR, ACTUALIZAR, ASIGNAR, ELIMINAR, EN,
                 PUNTO, ASTERISCO, PARENTESIS_L, PARENTESIS_R, FIN_INSTRUCCION, 
                 IGUAL, MAYOR_QUE, MENOR_QUE, MAYOR_IGUAL_QUE, MENOR_IGUAL_QUE, DIFERENTE,
-                AND, OR, IDENTIFICADOR, VALORES, COMA, LEX_ERROR;
+                AND, OR, IDENTIFICADOR, VALORES, COMA;
 terminal Integer    ENTERO;
 terminal Float      DECIMAL;
 terminal String     CADENA;
 
 /* Non-terminals */
-non terminal    relational_operator, values, value, instruccion, select_stm, insert_stm, update_stm,
+non terminal    relational_operator, values, instruccion, select_stm, insert_stm, update_stm,
                 delete_stm, columns, path, filtros_opt, columns_opt, asignations, 
                 more_columns, carpetas, filtros, conditions, condition, logic, and_stm, or_stm,
                 comparable, insertables, more_insertables, more_asignations,
@@ -104,13 +120,13 @@ condition ::= IDENTIFICADOR relational_operator comparable;
 comparable ::= values 
             | IDENTIFICADOR;
 
-insertables ::= value more_insertables;
+insertables ::= values more_insertables;
 more_insertables ::= COMA insertables 
             | /*empty*/;
 
 columns_opt ::= PARENTESIS_L columns PARENTESIS_R 
             | /*empty*/;
 
-asignations ::= IDENTIFICADOR IGUAL value more_asignations;
-more_asignations ::= asignations 
+asignations ::= IDENTIFICADOR IGUAL values more_asignations;
+more_asignations ::= COMA asignations 
             | /*empty*/;

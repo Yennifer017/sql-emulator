@@ -10,12 +10,12 @@ public class sym {
   /* terminals */
   public static final int AND = 20;
   public static final int PUNTO = 9;
-  public static final int CADENA = 28;
+  public static final int CADENA = 27;
   public static final int MAYOR_IGUAL_QUE = 17;
   public static final int INSERTAR = 4;
   public static final int OR = 21;
   public static final int IGUAL = 14;
-  public static final int DECIMAL = 27;
+  public static final int DECIMAL = 26;
   public static final int MENOR_IGUAL_QUE = 18;
   public static final int ELIMINAR = 7;
   public static final int MAYOR_QUE = 15;
@@ -30,11 +30,10 @@ public class sym {
   public static final int EOF = 0;
   public static final int ASTERISCO = 10;
   public static final int DIFERENTE = 19;
-  public static final int LEX_ERROR = 25;
   public static final int error = 1;
   public static final int IDENTIFICADOR = 22;
   public static final int EN = 8;
-  public static final int ENTERO = 26;
+  public static final int ENTERO = 25;
   public static final int SELECCIONAR = 2;
   public static final int FIN_INSTRUCCION = 13;
   public static final String[] terminalNames = new String[] {
@@ -63,7 +62,6 @@ public class sym {
   "IDENTIFICADOR",
   "VALORES",
   "COMA",
-  "LEX_ERROR",
   "ENTERO",
   "DECIMAL",
   "CADENA"

@@ -63,10 +63,8 @@ Identifier = [:jletter:] ( [:jletterdigit:] | "-" | "_" | "@" | "+" | "*" | "#" 
         return new Symbol(type, yyline+1, yycolumn+1, value);
     }
 
-    private Symbol error(String message) {
-        //System.out.println("Error en la linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + " : "+message);
+    private void error(String message) {
         errorsList.add("Error en la linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + " : "+message);
-        return new Symbol(sym.LEX_ERROR, yyline+1, yycolumn+1);
     }
 
 %}
@@ -108,12 +106,12 @@ Identifier = [:jletter:] ( [:jletterdigit:] | "-" | "_" | "@" | "+" | "*" | "#" 
   /*otras variables*/
     {DecIntegerLiteral}                 { return symbol(sym.ENTERO, new Integer(yytext()));}
     {DecIntegerLiteral}"."{DecIntegerLiteral}   { return symbol(sym.DECIMAL, new Float(yytext()));}
-    \"{L}({L}|{DecIntegerLiteral})*\"   { return symbol(sym.CADENA, new String(yytext()));}
+    \"(.)*\"   { return symbol(sym.CADENA, new String(yytext()));}
     {Identifier}                        { return symbol(sym.IDENTIFICADOR, yytext() );}
      
   /*lo ignorado*/
     {WhiteSpace} 	      {/* ignoramos */}
 
   /* error fallback */
-    .               { return error("Simbolo invalido <"+ yytext()+">");}
+    .               { error("Simbolo invalido <"+ yytext()+">");}
     <<EOF>>         { return symbol(sym.EOF); }
