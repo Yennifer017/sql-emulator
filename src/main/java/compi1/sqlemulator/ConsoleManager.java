@@ -4,6 +4,7 @@ import compi1.sqlemulator.files.AdmiFiles;
 import compi1.sqlemulator.lexer_parser.Lexer;
 import compi1.sqlemulator.lexer_parser.parser;
 import compi1.sqlemulator.traductor.Translator;
+import compi1.sqlemulator.traductor.util.DisplayUtil;
 import java.io.StringReader;
 import java.util.List;
 import javax.swing.JTextPane;
@@ -23,15 +24,15 @@ public class ConsoleManager {
     private final String MSS_FOLLOWING_ERRORS = "[borrar a partir de esta linea para que se vuelva a ejecutar]\n";
 
     private JTextPane console;
-    private AdmiFiles admiFiles;
     private boolean runningByUser;
     private Translator translator;
+    private DisplayUtil displayUtil;
 
     public ConsoleManager(JTextPane console, AdmiFiles admiFiles) {
         this.console = console;
-        this.admiFiles = admiFiles;
         this.runningByUser = true;
         this.translator = new Translator(admiFiles);
+        this.displayUtil = new DisplayUtil();
     }
 
     public DefaultStyledDocument getNewDoc() {
@@ -67,14 +68,19 @@ public class ConsoleManager {
                 parser.parse();
                 if (!lexer.getErrors().isEmpty() || !parser.getSyntaxErrors().isEmpty()) {
                     runningByUser = false;
-                    String content = console.getText();
-                    content += "\n" + MSS_FOLLOWING_ERRORS;
+                    String content = "\n" + MSS_FOLLOWING_ERRORS;
                     content += showErrors("ERRORES LEXICOS", lexer.getErrors());
                     content += showErrors("ERRORES SINTACTICOS", parser.getSyntaxErrors());
-                    console.setText(content);
+                    displayUtil.appendText(console, content);
                     runningByUser = true;
                 } else { //cuando se puede realizar alguna accion
-                    System.out.println(translator.translateCode(lexer.getTokens()));
+                    runningByUser = false;
+                    String mss = translator.translateCode(lexer.getTokens());
+                    if(!translator.getSemanticErros().isEmpty()){
+                        mss += "\n" + MSS_FOLLOWING_ERRORS;
+                        mss += showErrors("ERRORES SEMANTICOS", translator.getSemanticErros());
+                    }
+                    runningByUser = true;
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -3,11 +3,11 @@ package compi1.sqlemulator.files;
 import compi1.sqlemulator.exceptions.DirectoryException;
 import compi1.sqlemulator.exceptions.FileException;
 import compi1.sqlemulator.exceptions.FileExtensionException;
-import compi1.sqlemulator.exceptions.FileNotFoundEx;
 import compi1.sqlemulator.exceptions.FileOpenException;
 import compi1.sqlemulator.exceptions.ProjectOpenException;
 import compi1.sqlemulator.util.BinarySearch;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +17,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyledDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -41,6 +44,7 @@ public class AdmiFiles {
     private JPanel filesBar;
     private JTextPane displayContent;
     private JLabel labelForFileName;
+    private CSVinterpretor csvInterpretor;
 
     public AdmiFiles(JTree treeDisplay, JPanel filesBar, JTextPane displayContent, JLabel labelForFileName) {
         this.treeDisplay = treeDisplay;
@@ -52,6 +56,7 @@ public class AdmiFiles {
         this.displayContent = displayContent;
         this.labelForFileName = labelForFileName;
         creatorFile = new CreatorFileIDE();
+        csvInterpretor = new CSVinterpretor(displayContent);
     }
 
     public void openProject() throws IOException, ProjectOpenException, DirectoryException, FileOpenException {
@@ -268,10 +273,10 @@ public class AdmiFiles {
      *
      * @param pathWithDots
      * @throws compi1.sqlemulator.exceptions.DirectoryException
-     * @throws compi1.sqlemulator.exceptions.FileNotFoundEx
+     * @throws java.io.FileNotFoundException
      * @throws java.io.IOException
      */
-    public void openFile(String pathWithDots) throws DirectoryException, FileNotFoundEx, IOException {
+    public void openFile(String pathWithDots) throws DirectoryException, FileNotFoundException, IOException {
         String path = pathWithDots.replace(".", directoryU.getCarpetSeparator());
         path += ".csv";
         if (!currentProject.isEmpty()) { //si esta abierto un proyecto
@@ -285,15 +290,21 @@ public class AdmiFiles {
                     openFiles.get(index).executeAction(displayContent, labelForFileName, this);
                 }
             } else {
-                throw new FileNotFoundEx();
+                throw new FileNotFoundException();
             }
         } else if (currentProject.isEmpty() && currentFile != null) { //cuando solo es un archivo y esta abierto
             if (!currentFile.getName().equals(path)) {
-                throw new FileNotFoundEx();
+                throw new FileNotFoundException();
             }
         } else { //cuando no hay un archivo abierto
             throw new DirectoryException();
         }
+    }
+    
+    public void appendContent(String content) throws BadLocationException{
+        StyledDocument doc = displayContent.getStyledDocument();
+        SimpleAttributeSet attributeSet = new SimpleAttributeSet();
+        doc.insertString(doc.getLength(), content, attributeSet);
     }
 
     protected void setCurrentFile(OpenFile currentFile) {
@@ -302,6 +313,10 @@ public class AdmiFiles {
 
     protected OpenFile getCurrentFile() {
         return this.currentFile;
+    }
+    
+    public CSVinterpretor getCSVinterpretor(){
+        return this.csvInterpretor;
     }
 
 }

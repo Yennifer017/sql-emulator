@@ -13,6 +13,9 @@ import java.util.List;
  * @author yenni
  */
 public abstract class TranslatorStm {
+    protected final static String ERROR_MSS = "No se pudo ejecutar un ";
+    protected String errorMss;
+    
     protected List<String> semanticErrors;
     
     protected SeparatorElements separator;

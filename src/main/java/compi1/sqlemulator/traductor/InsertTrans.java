@@ -1,8 +1,9 @@
 
 package compi1.sqlemulator.traductor;
 
+import com.opencsv.exceptions.CsvValidationException;
 import compi1.sqlemulator.exceptions.DirectoryException;
-import compi1.sqlemulator.exceptions.FileNotFoundEx;
+import compi1.sqlemulator.exceptions.InvalidDataException;
 import compi1.sqlemulator.files.AdmiFiles;
 import compi1.sqlemulator.lexer_parser.Token;
 import compi1.sqlemulator.lexer_parser.sym;
@@ -13,6 +14,7 @@ import compi1.sqlemulator.traductor.util.Index;
 import compi1.sqlemulator.traductor.util.SeparatorElements;
 import java.io.IOException;
 import java.util.List;
+import javax.swing.text.BadLocationException;
 
 /**
  *
@@ -24,6 +26,7 @@ public class InsertTrans extends TranslatorStm{
         super.semanticErrors = semanticErrosList;
         super.separator =  new SeparatorElements();
         super.admiFiles = admiFiles;
+        super.errorMss = ERROR_MSS + "insert";
     }
 
     @Override
@@ -31,13 +34,57 @@ public class InsertTrans extends TranslatorStm{
         InsertModel model = (InsertModel) this.separateTkns(tokens, index);
         try {
             admiFiles.openFile(model.getPath().getPathWithDots());
-            
-            return null;
-        } catch (FileNotFoundEx | DirectoryException | IOException ex) {
+            if(model.getColumns()==null){
+                insertAll(model);
+            }else{
+                insertByColumns();
+            }
+            return "Insercion exitosa :)";
+        } catch (DirectoryException | IOException ex) {
             semanticErrors.add("El archivo " + model.getPath().getPathWithDots() + ", linea:"
                 + model.getPath().getLine() + ", col:" + model.getPath().getCol() + " no existe");
-            return "No se pudo ejecutar un insert\n";
+            return errorMss;
+        } catch (CsvValidationException ex){
+            semanticErrors.add("No se pudo leer correctamente el archivo" + model.getPath().getPathWithDots() 
+                    + ", asegurate que no este corrompido");
+            return errorMss;
+        } catch (InvalidDataException ex){
+            semanticErrors.add(ex.getMessage());
+            return errorMss;
         }
+    }
+    
+    private void insertAll(InsertModel model) 
+            throws IOException, CsvValidationException, InvalidDataException{
+        if(admiFiles.getCSVinterpretor().getTotalColumns() == model.getValues().size()){
+            String content = "";
+            for (int i = 0; i < model.getValues().size(); i++) {
+                //para quitarle las comillas a los strings
+                if(model.getValues().get(i).getType() == sym.CADENA){
+                    content += model.getValues().get(i).getLexem().toString()
+                            .replace("\"", "");
+                }else{
+                    content += model.getValues().get(i).getLexem().toString();
+                }
+                //para agregar coma o salto de linea
+                if(i!= model.getValues().size() - 1){
+                    content += ",";
+                }else{
+                    content += "\n";
+                }
+            }
+            try {
+                admiFiles.appendContent(content);
+            } catch (BadLocationException ex) {
+                System.out.println("Excepcion en el insert controlada");
+            }
+        }else{ //si no concuerda con las columnas
+            throw new InvalidDataException("Las columnas no son suficientes para realizar la insercion");
+        }
+    }
+    
+    private void insertByColumns(){
+        
     }
 
     @Override

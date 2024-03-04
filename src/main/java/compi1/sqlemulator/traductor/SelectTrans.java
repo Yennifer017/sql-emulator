@@ -2,7 +2,6 @@
 package compi1.sqlemulator.traductor;
 
 import compi1.sqlemulator.exceptions.DirectoryException;
-import compi1.sqlemulator.exceptions.FileNotFoundEx;
 import compi1.sqlemulator.files.AdmiFiles;
 import compi1.sqlemulator.lexer_parser.Token;
 import compi1.sqlemulator.lexer_parser.sym;
@@ -33,7 +32,7 @@ public class SelectTrans extends TranslatorStm{
         try {
             admiFiles.openFile(model.getPath().getPathWithDots());
             return null;
-        } catch (FileNotFoundEx | DirectoryException | IOException ex) {
+        } catch (DirectoryException | IOException ex) {
             semanticErrors.add("El archivo " + model.getPath().getPathWithDots() + ", linea:"
                 + model.getPath().getLine() + ", col:" + model.getPath().getCol() + " no existe");
             return "No se pudo ejecutar un select\n";
