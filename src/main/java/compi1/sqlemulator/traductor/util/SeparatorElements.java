@@ -2,6 +2,7 @@ package compi1.sqlemulator.traductor.util;
 
 import compi1.sqlemulator.lexer_parser.Token;
 import compi1.sqlemulator.lexer_parser.sym;
+import compi1.sqlemulator.traductor.components.Asignation;
 import compi1.sqlemulator.traductor.components.Condition;
 import compi1.sqlemulator.traductor.components.Filtro;
 import java.util.ArrayList;
@@ -36,6 +37,20 @@ public class SeparatorElements {
         }
         return columns;
     }
+    
+    public List<Token> separateValues(List<Token> tokens, Index currentPos){
+        List<Token> values = new ArrayList<>();
+        int typeTkn = tokens.get(currentPos.getNum()).getType();
+        while (typeTkn == sym.CADENA || typeTkn == sym.COMA || typeTkn == sym.ENTERO 
+                || typeTkn == sym.DECIMAL) {
+            if (typeTkn != sym.COMA) {
+                values.add(tokens.get(currentPos.getNum()));
+            }
+            currentPos.increment();
+            typeTkn = tokens.get(currentPos.getNum()).getType();
+        }
+        return values;
+    }
 
     public Filtro separateConditions(List<Token> tokens, Index currentPos) {
         Filtro filtro = new Filtro();
@@ -69,6 +84,33 @@ public class SeparatorElements {
         }
         filtro.addConditon(currentCondition);
         return filtro;
+    }
+    
+    
+    public List<Asignation> separateColAsign(List<Token> tokens, Index currentPos) {
+        List<Asignation> asignations = new ArrayList<>();
+        int auxiliarIndex = 1;
+        Asignation currentAsignation = new Asignation();
+        int typeTkn = tokens.get(currentPos.getNum()).getType();
+        while (typeTkn != sym.FIN_INSTRUCCION && typeTkn != sym.FILTRAR) {
+            if (auxiliarIndex == 4) {
+                asignations.add(currentAsignation);
+                currentAsignation = new Asignation();
+                auxiliarIndex = 1;
+                currentPos.increment(); //para que se "reinicie el ciclo"
+            }
+            switch (auxiliarIndex) {
+                case 1 ->
+                    currentAsignation.setColumn(tokens.get(currentPos.getNum()));
+                case 3 ->
+                    currentAsignation.setValue(tokens.get(currentPos.getNum()));
+            }
+            auxiliarIndex++;
+            currentPos.increment();
+            typeTkn = tokens.get(currentPos.getNum()).getType();
+        }
+        asignations.add(currentAsignation);
+        return asignations;
     }
 
 }

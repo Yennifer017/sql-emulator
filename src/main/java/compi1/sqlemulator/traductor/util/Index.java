@@ -19,4 +19,7 @@ public class Index {
     public void restart(){
         num = 0;
     }
+    public void increment(int num){
+        this.num += num;
+    }
 }

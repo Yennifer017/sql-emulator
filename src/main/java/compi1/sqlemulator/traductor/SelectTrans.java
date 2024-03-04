@@ -21,8 +21,8 @@ import java.util.List;
  */
 public class SelectTrans extends TranslatorStm{
     
-    public SelectTrans(AdmiFiles admiFiles){
-        super.semanticErrors = new ArrayList<>();
+    public SelectTrans(AdmiFiles admiFiles, List<String> semanticErrosList){
+        super.semanticErrors = semanticErrosList;
         super.separator =  new SeparatorElements();
         super.admiFiles = admiFiles;
     }
@@ -57,10 +57,5 @@ public class SelectTrans extends TranslatorStm{
         index.increment(); //para salir de la instruccion
         return model;
     }
-    
-    
-    
-    
-
     
 }
