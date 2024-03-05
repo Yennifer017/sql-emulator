@@ -1,5 +1,7 @@
 package compi1.sqlemulator.files;
 
+import compi1.sqlemulator.files.models.FileProject;
+import compi1.sqlemulator.files.models.OpenFile;
 import compi1.sqlemulator.exceptions.DirectoryException;
 import compi1.sqlemulator.exceptions.FileException;
 import compi1.sqlemulator.exceptions.FileExtensionException;
@@ -306,17 +308,24 @@ public class AdmiFiles {
         SimpleAttributeSet attributeSet = new SimpleAttributeSet();
         doc.insertString(doc.getLength(), content, attributeSet);
     }
+    public void setNewContent(String content){
+        displayContent.setText(content);
+    }
 
-    protected void setCurrentFile(OpenFile currentFile) {
+    public void setCurrentFile(OpenFile currentFile) {
         this.currentFile = currentFile;
     }
 
-    protected OpenFile getCurrentFile() {
+    public OpenFile getCurrentFile() {
         return this.currentFile;
     }
     
     public CSVinterpretor getCSVinterpretor(){
         return this.csvInterpretor;
     }
-
+    
+    public String getCurrentDisplayTxt(){
+        return this.displayContent.getText().replace("\t", "");
+    }
+    
 }

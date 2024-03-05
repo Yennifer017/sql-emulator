@@ -1,5 +1,5 @@
 
-package compi1.sqlemulator.files;
+package compi1.sqlemulator.files.models;
 
 import java.io.File;
 import lombok.AllArgsConstructor;

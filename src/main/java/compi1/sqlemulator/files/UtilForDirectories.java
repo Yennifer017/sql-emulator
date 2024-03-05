@@ -1,5 +1,6 @@
 package compi1.sqlemulator.files;
 
+import compi1.sqlemulator.files.models.FileProject;
 import compi1.sqlemulator.exceptions.DirectoryException;
 import java.util.List;
 import java.io.File;

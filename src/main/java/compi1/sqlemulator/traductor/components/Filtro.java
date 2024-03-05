@@ -3,11 +3,13 @@ package compi1.sqlemulator.traductor.components;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 
 /**
  *
  * @author yenni
  */
+@Getter
 public class Filtro {
     public static int NO_LOGIC_RELATIONAL = -10;
     int codeLogicRelational;
@@ -26,7 +28,4 @@ public class Filtro {
         codeLogicRelational = code;
     }
     
-    public int getCodeLogicRelational(){
-        return this.codeLogicRelational;
-    }
 }

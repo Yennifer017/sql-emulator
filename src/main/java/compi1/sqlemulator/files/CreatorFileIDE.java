@@ -1,6 +1,7 @@
 
 package compi1.sqlemulator.files;
 
+import compi1.sqlemulator.files.models.FileProject;
 import java.io.File;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;

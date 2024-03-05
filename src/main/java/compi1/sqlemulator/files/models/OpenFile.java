@@ -1,5 +1,6 @@
-package compi1.sqlemulator.files;
+package compi1.sqlemulator.files.models;
 
+import compi1.sqlemulator.files.AdmiFiles;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
