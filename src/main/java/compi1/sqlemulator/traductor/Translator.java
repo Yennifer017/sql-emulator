@@ -33,6 +33,7 @@ public class Translator {
     
     public String translateCode(List<Token> tokens){
         index.restart();
+        semanticErros.clear();
         String output = "Output\n";
         while (index.getNum() < tokens.size()) {            
             switch (tokens.get(index.getNum()).getType()) {

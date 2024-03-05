@@ -6,6 +6,7 @@ import com.opencsv.exceptions.CsvValidationException;
 import compi1.sqlemulator.exceptions.InvalidColumnException;
 import compi1.sqlemulator.files.models.ColumnsCSV;
 import compi1.sqlemulator.lexer_parser.Token;
+import compi1.sqlemulator.traductor.components.Assignation;
 import compi1.sqlemulator.traductor.components.Filtro;
 import compi1.sqlemulator.util.BinarySearch;
 import java.io.IOException;
@@ -65,7 +66,27 @@ public class CSVinterpretor {
                 errorsList.add("Columna inexistente: " + current.getLexem() 
                         + ", fila: " + current.getLine() + ", col:" + current.getColumn());
             }else{
-                filtros.getConditions().get(i).setNumberColumn(
+                filtros.getConditions().get(i)
+                        .setNumberColumn(columns.get(pos).getRealIndex());
+            }
+        }
+        if(!errorsList.isEmpty()){
+            throw new InvalidColumnException();
+        }
+    }
+    
+    public void setPosColumnsToAsignation(List<Assignation> asignations, List<String> errorsList) 
+            throws IOException, CsvValidationException, InvalidColumnException{
+        List<ColumnsCSV> columns = this.getColumnsInOrder();
+        for (int i = 0; i < asignations.size(); i++) {
+            Token current = asignations.get(i).getColumn();
+            int pos = BinarySearch.searchColumns(columns, 
+                    current.getLexem().toString());
+            if(pos<0){
+                errorsList.add("Columna inexistente: " + current.getLexem() 
+                        + ", fila: " + current.getLine() + ", col:" + current.getColumn());
+            }else{
+                asignations.get(i).setPositionColumn(
                         columns.get(pos).getRealIndex());
             }
         }

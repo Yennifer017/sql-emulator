@@ -34,7 +34,7 @@ public class DeleteTrans extends TranslatorStm {
         filterTraductor = new FilterTraductor();
         totalDeleted = 0;
     }
-
+    
     
     @Override
     public String translate(List<Token> tokens, Index index) {
@@ -74,28 +74,7 @@ public class DeleteTrans extends TranslatorStm {
         String resultDisplay = String.join(",", csvReader.readNext()) + "\n";
         String[] currentLine;
         while ((currentLine=csvReader.readNext()) != null) { //leemos todas las lineas 
-            boolean result = false;
-            switch (filter.getCodeLogicRelational()) {
-                case sym.AND:
-                    for (int i = 0; i < filter.getConditions().size(); i++) {
-                        result = filterTraductor.validate(
-                                currentLine[filter.getConditions().get(i).getNumberColumn()], 
-                                filter.getConditions().get(i));
-                        if(result == false){
-                            break;
-                        }
-                    }
-                    break;
-                default: //sym.Or //no relational operator
-                    for (int i = 0; i < filter.getConditions().size(); i++) {
-                        result = filterTraductor.validate(
-                                currentLine[filter.getConditions().get(i).getNumberColumn()], 
-                                filter.getConditions().get(i));
-                        if(result == true){
-                            break;
-                        }
-                    }
-            }
+            boolean result = filterTraductor.validateFilters(filter, currentLine);
             if(!result){
                 resultDisplay += String.join(",", currentLine) + "\n";
             }else{ //cuando si se debe eliminar

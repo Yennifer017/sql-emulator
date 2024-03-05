@@ -2,7 +2,7 @@ package compi1.sqlemulator.traductor.util;
 
 import compi1.sqlemulator.lexer_parser.Token;
 import compi1.sqlemulator.lexer_parser.sym;
-import compi1.sqlemulator.traductor.components.Asignation;
+import compi1.sqlemulator.traductor.components.Assignation;
 import compi1.sqlemulator.traductor.components.Condition;
 import compi1.sqlemulator.traductor.components.Filtro;
 import java.util.ArrayList;
@@ -87,15 +87,15 @@ public class SeparatorElements {
     }
     
     
-    public List<Asignation> separateColAsign(List<Token> tokens, Index currentPos) {
-        List<Asignation> asignations = new ArrayList<>();
+    public List<Assignation> separateColAsign(List<Token> tokens, Index currentPos) {
+        List<Assignation> asignations = new ArrayList<>();
         int auxiliarIndex = 1;
-        Asignation currentAsignation = new Asignation();
+        Assignation currentAsignation = new Assignation();
         int typeTkn = tokens.get(currentPos.getNum()).getType();
         while (typeTkn != sym.FIN_INSTRUCCION && typeTkn != sym.FILTRAR) {
             if (auxiliarIndex == 4) {
                 asignations.add(currentAsignation);
-                currentAsignation = new Asignation();
+                currentAsignation = new Assignation();
                 auxiliarIndex = 1;
                 currentPos.increment(); //para que se "reinicie el ciclo"
             }

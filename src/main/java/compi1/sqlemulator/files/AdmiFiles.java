@@ -295,7 +295,7 @@ public class AdmiFiles {
                 throw new FileNotFoundException();
             }
         } else if (currentProject.isEmpty() && currentFile != null) { //cuando solo es un archivo y esta abierto
-            if (!currentFile.getName().equals(path)) {
+            if (!currentFile.getFile().getName().equals(path)) {
                 throw new FileNotFoundException();
             }
         } else { //cuando no hay un archivo abierto
