@@ -80,6 +80,7 @@ public class ConsoleManager {
                         mss += "\n" + MSS_FOLLOWING_ERRORS;
                         mss += showErrors("ERRORES SEMANTICOS", translator.getSemanticErros());
                     }
+                    displayUtil.appendText(console, mss);
                     runningByUser = true;
                 }
             } catch (Exception e) {

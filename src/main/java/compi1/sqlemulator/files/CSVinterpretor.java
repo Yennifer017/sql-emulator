@@ -65,7 +65,8 @@ public class CSVinterpretor {
                 errorsList.add("Columna inexistente: " + current.getLexem() 
                         + ", fila: " + current.getLine() + ", col:" + current.getColumn());
             }else{
-                filtros.getConditions().get(i).setNumberColumn(pos);
+                filtros.getConditions().get(i).setNumberColumn(
+                        columns.get(pos).getRealIndex());
             }
         }
         if(!errorsList.isEmpty()){

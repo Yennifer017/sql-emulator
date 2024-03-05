@@ -5,6 +5,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import compi1.sqlemulator.exceptions.DirectoryException;
 import compi1.sqlemulator.exceptions.InvalidColumnException;
+import compi1.sqlemulator.exceptions.InvalidDataException;
 import compi1.sqlemulator.files.AdmiFiles;
 import compi1.sqlemulator.lexer_parser.Token;
 import compi1.sqlemulator.lexer_parser.sym;
@@ -17,7 +18,6 @@ import compi1.sqlemulator.traductor.util.SeparatorElements;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
-
 /**
  *
  * @author yenni
@@ -25,27 +25,32 @@ import java.util.List;
 public class DeleteTrans extends TranslatorStm {
 
     private FilterTraductor filterTraductor;
+    private int totalDeleted;
     public DeleteTrans(AdmiFiles admiFiles, List<String> semanticErrosList) {
         super.semanticErrors = semanticErrosList;
         super.separator =  new SeparatorElements();
         super.admiFiles = admiFiles;
         super.errorMss = ERROR_MSS + "delete";
         filterTraductor = new FilterTraductor();
+        totalDeleted = 0;
     }
 
     
     @Override
     public String translate(List<Token> tokens, Index index) {
+        totalDeleted = 0;
         DeleteModel model = (DeleteModel) this.separateTkns(tokens, index);
         try {
             admiFiles.openFile(model.getPath().getPathWithDots());
             if(model.getFiltro() == null){ //cuando no hay filtros
                 admiFiles.setNewContent(admiFiles.getCSVinterpretor().getFirstLine());
+                return "Eliminacion exitosa, se eliminaron totas las filas existentes";
             }else{
                 admiFiles.getCSVinterpretor().setPosColumnToFilter(model.getFiltro(), semanticErrors);
-                this.deleteWithFilters(admiFiles.getCurrentDisplayTxt(), model.getFiltro());
+                admiFiles.setNewContent(deleteWithFilters(
+                        admiFiles.getCurrentDisplayTxt(), model.getFiltro()));
+                return "Eliminacion exitosa, total de filas eliminadas: " + totalDeleted;
             }
-            return null;
         } catch ( DirectoryException | IOException ex) {
             semanticErrors.add("El archivo " + model.getPath().getPathWithDots() + ", linea:"
                 + model.getPath().getLine() + ", col:" + model.getPath().getCol() + " no existe");
@@ -56,24 +61,49 @@ public class DeleteTrans extends TranslatorStm {
             return errorMss;
         } catch (InvalidColumnException ex) {
             return errorMss;
+        } catch (InvalidDataException ex) {
+            semanticErrors.add(ex.getMessage());
+            return errorMss;
         }
     }
     
-    private void deleteWithFilters(String text, Filtro filter) throws IOException, CsvValidationException{
+    private String deleteWithFilters(String text, Filtro filter) 
+            throws IOException, CsvValidationException, InvalidDataException{
         StringReader reader = new StringReader(text);
         CSVReader csvReader = new CSVReader(reader);
-        csvReader.readNext(); //para la primera linea, que vamos a obviar
-        String[] lines;
-        while ((lines=csvReader.readNext()) != null) { //leemos todas las lineas 
+        String resultDisplay = String.join(",", csvReader.readNext()) + "\n";
+        String[] currentLine;
+        while ((currentLine=csvReader.readNext()) != null) { //leemos todas las lineas 
+            boolean result = false;
             switch (filter.getCodeLogicRelational()) {
                 case sym.AND:
-                    
+                    for (int i = 0; i < filter.getConditions().size(); i++) {
+                        result = filterTraductor.validate(
+                                currentLine[filter.getConditions().get(i).getNumberColumn()], 
+                                filter.getConditions().get(i));
+                        if(result == false){
+                            break;
+                        }
+                    }
                     break;
                 default: //sym.Or //no relational operator
-                    throw new AssertionError();
+                    for (int i = 0; i < filter.getConditions().size(); i++) {
+                        result = filterTraductor.validate(
+                                currentLine[filter.getConditions().get(i).getNumberColumn()], 
+                                filter.getConditions().get(i));
+                        if(result == true){
+                            break;
+                        }
+                    }
+            }
+            if(!result){
+                resultDisplay += String.join(",", currentLine) + "\n";
+            }else{ //cuando si se debe eliminar
+                totalDeleted ++;
             }
         }
         csvReader.close();
+        return resultDisplay;
     }
 
     @Override

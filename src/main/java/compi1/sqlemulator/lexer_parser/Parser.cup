@@ -55,8 +55,9 @@ terminal String     CADENA;
 non terminal    relational_operator, values, instruccion, select_stm, insert_stm, update_stm,
                 delete_stm, columns, path, filtros_opt, columns_opt, asignations, 
                 more_columns, carpetas, filtros, conditions, condition, logic, and_stm, or_stm,
-                comparable, insertables, more_insertables, more_asignations,
-                and_stm2, or_stm2, selects, instrucciones, more_instruccions;
+                insertables, more_insertables, more_asignations,
+                and_stm2, or_stm2, selects, instrucciones, more_instruccions,
+                number_values, relational_complete_operator, comparative;
 
 
 /* The grammar */
@@ -65,8 +66,10 @@ non terminal    relational_operator, values, instruccion, select_stm, insert_stm
 start with instrucciones;
 
 /* no terminales que derivan en terminales*/
-relational_operator ::= MAYOR_QUE | IGUAL | MENOR_QUE | MAYOR_IGUAL_QUE | MENOR_IGUAL_QUE | DIFERENTE;
-values ::= CADENA | ENTERO | DECIMAL;
+relational_complete_operator ::= IGUAL | DIFERENTE;
+relational_operator ::= MAYOR_QUE | MENOR_QUE | MAYOR_IGUAL_QUE | MENOR_IGUAL_QUE ;
+number_values ::= ENTERO | DECIMAL;
+values ::= CADENA | number_values;
 
 instrucciones ::= instruccion FIN_INSTRUCCION more_instruccions;
 
@@ -109,10 +112,15 @@ and_stm2 ::= AND condition and_stm2
 or_stm ::= OR condition or_stm2 ;
 or_stm2 ::= OR condition or_stm2
             | /*empty*/;
+
+
+
             
-condition ::= IDENTIFICADOR relational_operator comparable;
-comparable ::= values 
-            | IDENTIFICADOR;
+condition ::= IDENTIFICADOR comparative;
+
+comparative ::= relational_complete_operator values
+            | relational_operator number_values;
+
 
 insertables ::= values more_insertables;
 more_insertables ::= COMA insertables 
