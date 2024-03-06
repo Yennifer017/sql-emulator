@@ -1,0 +1,9 @@
+<PROYECTO nombre="MySQL_simulator">
+    <CARPETA nombre="books">
+        <archivo nombre="access-code.csv" ubicacion="C:\Users\yenni\OneDrive\Escritorio\archivos de Prueba\MySQL_simulator\books\access-code.csv"/>
+    </CARPETA>
+    <archivo nombre="settings.ide" ubicacion="C:\Users\yenni\OneDrive\Escritorio\archivos de Prueba\MySQL_simulator\settings.ide"/>
+    <CARPETA nombre="usersData">
+        <archivo nombre="usernames.csv" ubicacion="C:\Users\yenni\OneDrive\Escritorio\archivos de Prueba\MySQL_simulator\usersData\usernames.csv"/>
+    </CARPETA>
+</PROYECTO>

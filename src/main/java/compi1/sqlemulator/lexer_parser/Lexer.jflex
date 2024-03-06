@@ -21,7 +21,7 @@ WhiteSpace = {LineTerminator} | [ \t\f]
 
 /* constants */
 L=[a-zA-Z_]+
-DecIntegerLiteral = 0 | [1-9][0-9]*
+DecIntegerLiteral = [0-9]+
 Identifier = [:jletter:] ( [:jletterdigit:] | "-" | "_" | "@" | "+" | "*" | "#" )*
 
 
