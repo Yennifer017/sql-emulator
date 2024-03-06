@@ -2,11 +2,7 @@ package compi1.sqlemulator.files;
 
 import compi1.sqlemulator.files.models.FileProject;
 import compi1.sqlemulator.files.models.OpenFile;
-import compi1.sqlemulator.exceptions.DirectoryException;
-import compi1.sqlemulator.exceptions.FileException;
-import compi1.sqlemulator.exceptions.FileExtensionException;
-import compi1.sqlemulator.exceptions.FileOpenException;
-import compi1.sqlemulator.exceptions.ProjectOpenException;
+import compi1.sqlemulator.exceptions.*;
 import compi1.sqlemulator.util.BinarySearch;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,6 +12,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
@@ -31,7 +28,7 @@ import javax.swing.tree.DefaultTreeModel;
  */
 public class AdmiFiles {
 
-    public static final String aceptedExtensions[] = {"txt", "csv"};
+    public static final String aceptedExtensions[] = {"csv"};
     private static final String EMPTY_NOTATION = "[none]";
 
     private List<FileProject> currentProject;
@@ -252,6 +249,28 @@ public class AdmiFiles {
             displayContent.setText(content);
             this.labelForFileName.setText(file.getName());
             currentFile = new OpenFile(file, content);
+        }
+    }
+    
+    public String createProject() throws IOException, InvalidDataException{
+        JOptionPane.showMessageDialog(null, 
+                "A continuacion selecciona el path donde sera guardado el proyecto");
+        String rootPath = directoryU.getPathFolder();
+        String nameProject = JOptionPane.showInputDialog("Ingresa el nombre del proyecto");
+        if(nameProject.matches("([a-z]|[A-Z]| _ )([a-z]|[A-Z]| _ |[0-9]| - | @ | + | [*] | #)*")){
+            directoryU.createDirectory(rootPath, nameProject);
+            rootPath += directoryU.getCarpetSeparator() + nameProject;
+            JOptionPane.showMessageDialog(null, 
+                    "A continuacion seleccina los archivos que sean copiados al proyecto");
+            String error = directoryU.copyFilesToPath(rootPath, 
+                    filesU.getFiles("Archivos csv", aceptedExtensions));
+            if(!error.isEmpty()){
+                throw new InvalidDataException(error + 
+                        "\n Advertencia: la carpeta se ha creado, por favor ingresa los archivos manualmente");
+            }
+            return rootPath;
+        }else {
+            throw new InvalidDataException("El nombre de la carpeta no es valida");
         }
     }
 

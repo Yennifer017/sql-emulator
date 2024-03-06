@@ -65,6 +65,10 @@ public class UpdateTrans extends TranslatorStm {
         } catch (InvalidDataException ex) {
             semanticErrors.add(ex.getMessage());
             return errorMss;
+        } catch (IndexOutOfBoundsException ex){
+            semanticErrors.add("Ocurrio un error con los datos del archivo, " 
+                    + model.getPath().getPathWithDots() + "asegurate de que este bien estructurado :/");
+            return errorMss;
         }
     }
     

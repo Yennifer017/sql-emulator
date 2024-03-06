@@ -16,8 +16,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * @author yenni
  */
 public class UtilForFiles {
+
     /**
      * Leer el contenido de un archivo
+     *
      * @param path del archivo
      * @return el texto leido
      * @throws java.io.FileNotFoundException
@@ -42,6 +44,7 @@ public class UtilForFiles {
 
     /**
      * Muestra un selector de un archivo con cualquier extension
+     *
      * @return el path del archivo
      * @throws java.io.IOException
      */
@@ -57,9 +60,10 @@ public class UtilForFiles {
 
     /**
      * Obtiene el path a partir de un selector de archivos
+     *
      * @param description para el usuario
      * @param aceptedExtensionFiles, lista de extensiones aceptadas
-     * @return 
+     * @return
      */
     public String getPath(String description, String[] aceptedExtensionFiles) {
         try {
@@ -76,15 +80,16 @@ public class UtilForFiles {
 
     /**
      * Reescribe un archivo a partir de un texto
+     *
      * @param texto
      * @param ruta
      */
     public void saveFile(String texto, String ruta) { //reescribe un archivo a partir de un texto
-            File archivo = new File(ruta); //obtiene el archivo de la ruta
-            saveFile(texto, archivo);
+        File archivo = new File(ruta); //obtiene el archivo de la ruta
+        saveFile(texto, archivo);
     }
-    
-    public void saveFile(String texto, File file){
+
+    public void saveFile(String texto, File file) {
         try {
             FileWriter escritor = new FileWriter(file, false);
             BufferedWriter buffer = new BufferedWriter(escritor);
@@ -139,13 +144,27 @@ public class UtilForFiles {
                     + "Guardado exitoso", JOptionPane.INFORMATION_MESSAGE);
         }
     }
-    
-    public boolean hasAceptedPath(String[] aceptedPaths, File file){
+
+    public boolean hasAceptedPath(String[] aceptedPaths, File file) {
         for (String aceptedPath : aceptedPaths) {
             if (file.getName().contains(aceptedPath)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public File[] getFiles(String description, String[] aceptedExtensions) throws IOException {
+        try {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setMultiSelectionEnabled(true);
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                    description, aceptedExtensions);
+            chooser.setFileFilter(filter);
+            chooser.showOpenDialog(null); //abrir el buscador
+            return chooser.getSelectedFiles();
+        } catch (NullPointerException e) {
+            throw new IOException();
+        }
     }
 }

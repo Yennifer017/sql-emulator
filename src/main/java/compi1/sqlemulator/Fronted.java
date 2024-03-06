@@ -8,14 +8,14 @@ import compi1.sqlemulator.exceptions.DirectoryException;
 import compi1.sqlemulator.exceptions.FileException;
 import compi1.sqlemulator.exceptions.FileExtensionException;
 import compi1.sqlemulator.exceptions.FileOpenException;
+import compi1.sqlemulator.exceptions.InvalidDataException;
 import compi1.sqlemulator.exceptions.ProjectOpenException;
 import compi1.sqlemulator.files.AdmiFiles;
-import compi1.sqlemulator.lexer_parser.Lexer;
-import compi1.sqlemulator.lexer_parser.parser;
 import compi1.sqlemulator.util.NumberLine;
 import java.awt.Dimension;
 import java.io.IOException;
-import java.io.StringReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 
@@ -289,6 +289,11 @@ public class Fronted extends javax.swing.JFrame {
 
         createProyectOp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         createProyectOp.setText("Crear proyecto");
+        createProyectOp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createProyectOpActionPerformed(evt);
+            }
+        });
         projectMenu.add(createProyectOp);
 
         closeProjectOp.setText("Cerrar proyecto");
@@ -479,6 +484,24 @@ public class Fronted extends javax.swing.JFrame {
     private void consoleCaretPositionChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_consoleCaretPositionChanged
         numConsole.updateColumna(columnaDisplay);
     }//GEN-LAST:event_consoleCaretPositionChanged
+
+    private void createProyectOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createProyectOpActionPerformed
+        try {
+            try {
+                admiFiles.closeFile();
+            } catch (Exception e) {
+            }
+            admiFiles.openProject(admiFiles.createProject());
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "No se pudo crear el proyecto :/");
+        } catch (DirectoryException | ProjectOpenException | FileOpenException e){
+            System.out.println("excepcion controlada");
+        } catch(InvalidDataException ex){
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        } catch (Exception ex){
+            showInesperatedError();
+        }
+    }//GEN-LAST:event_createProyectOpActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

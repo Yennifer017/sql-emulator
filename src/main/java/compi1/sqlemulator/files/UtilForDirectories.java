@@ -2,9 +2,13 @@ package compi1.sqlemulator.files;
 
 import compi1.sqlemulator.files.models.FileProject;
 import compi1.sqlemulator.exceptions.DirectoryException;
+import compi1.sqlemulator.exceptions.InvalidDataException;
 import java.util.List;
+import java.nio.file.Files;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import javax.swing.JFileChooser;
 
@@ -57,10 +61,27 @@ public class UtilForDirectories {
         }
     }
 
-    
-    
-    public void createCarpet() {
-        //TODO: implement the function
+    public void createDirectory(String rootPath, String name) throws IOException, InvalidDataException {
+        File directory = new File(rootPath + getCarpetSeparator() + name);
+        if (!directory.exists()) {
+            directory.mkdir();
+        } else {
+            throw new InvalidDataException("El nombre del proyecto ya existe");
+        }
+    }
+
+    public String copyFilesToPath(String rootPath, File[] files) {
+        String mss = "";
+        for (int i = 0; i < files.length; i++) {
+            try {
+                Path source = Paths.get(files[i].getAbsolutePath());
+                Path out = Paths.get(rootPath, getCarpetSeparator() + files[i].getName());// Create a new path for each file
+                Files.copy(source, out);
+            } catch (Exception e) {
+                mss += "No se pudo copiar el archivo: " + files[i].getName() + "\n";
+            }
+        }
+        return mss;
     }
 
     public String getCarpetSeparator() {
