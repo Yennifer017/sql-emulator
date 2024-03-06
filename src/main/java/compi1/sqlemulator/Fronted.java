@@ -14,8 +14,6 @@ import compi1.sqlemulator.files.AdmiFiles;
 import compi1.sqlemulator.util.NumberLine;
 import java.awt.Dimension;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 
@@ -38,7 +36,7 @@ public class Fronted extends javax.swing.JFrame {
     }
 
     private void initVariables() {
-        admiFiles = new AdmiFiles(treeDisplay, openFilesPanel, 
+        admiFiles = new AdmiFiles(treeDisplay, openFilesPanel,
                 display, fileNameDisplay);
         consoleManager = new ConsoleManager(console, admiFiles);
     }
@@ -67,6 +65,8 @@ public class Fronted extends javax.swing.JFrame {
             display.setText("");
         } catch (DirectoryException ex) {
             System.out.println("Excepcion de directorio controlada");
+        } catch (Exception ex){
+            showInesperatedError();
         }
     }
 
@@ -74,6 +74,8 @@ public class Fronted extends javax.swing.JFrame {
         try {
             admiFiles.closeFile();
         } catch (FileException ex1) {
+            showInesperatedError();
+        } catch (Exception ex){
             showInesperatedError();
         }
     }
@@ -97,6 +99,8 @@ public class Fronted extends javax.swing.JFrame {
                     "Cerrar archivo", JOptionPane.YES_NO_OPTION) == 0) {
                 closeFile();
             }
+        } catch (Exception ex){
+            showInesperatedError();
         }
     }
 
@@ -319,6 +323,11 @@ public class Fronted extends javax.swing.JFrame {
 
         newFileOp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         newFileOp.setText("Nuevo archivo");
+        newFileOp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newFileOpActionPerformed(evt);
+            }
+        });
         fileMenu.add(newFileOp);
 
         saveOp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
@@ -405,6 +414,8 @@ public class Fronted extends javax.swing.JFrame {
         } catch (FileExtensionException ex) {
             JOptionPane.showMessageDialog(null,
                     "El archivo seleccionado no tiene una extension aceptada por el ide");
+        } catch (Exception ex) {
+            showInesperatedError();
         }
 
     }//GEN-LAST:event_openFileOpActionPerformed
@@ -449,6 +460,8 @@ public class Fronted extends javax.swing.JFrame {
             } catch (FileExtensionException ex) {
                 JOptionPane.showMessageDialog(null,
                         "El archivo no es compatible con los aceptados por el ide (deber ser .txt o .csv)");
+            } catch (Exception ex) {
+                showInesperatedError();
             }
         }
     }//GEN-LAST:event_treeDisplayMouseClicked
@@ -458,11 +471,13 @@ public class Fronted extends javax.swing.JFrame {
             admiFiles.saveFile();
         } catch (FileException ex) {
             JOptionPane.showMessageDialog(null, "No se pudo guardar el archivo :/");
+        } catch (Exception ex) {
+            showInesperatedError();
         }
     }//GEN-LAST:event_saveOpActionPerformed
 
     private void saveAsOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsOpActionPerformed
-        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(null, "Sera implementado en la v 1.2");
     }//GEN-LAST:event_saveAsOpActionPerformed
 
     private void CloseFileOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseFileOpActionPerformed
@@ -494,14 +509,18 @@ public class Fronted extends javax.swing.JFrame {
             admiFiles.openProject(admiFiles.createProject());
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, "No se pudo crear el proyecto :/");
-        } catch (DirectoryException | ProjectOpenException | FileOpenException e){
+        } catch (DirectoryException | ProjectOpenException | FileOpenException e) {
             System.out.println("excepcion controlada");
-        } catch(InvalidDataException ex){
+        } catch (InvalidDataException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
-        } catch (Exception ex){
+        } catch (Exception ex) {
             showInesperatedError();
         }
     }//GEN-LAST:event_createProyectOpActionPerformed
+
+    private void newFileOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newFileOpActionPerformed
+        JOptionPane.showMessageDialog(null, "Sera implementado en la v. 1.2");
+    }//GEN-LAST:event_newFileOpActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
