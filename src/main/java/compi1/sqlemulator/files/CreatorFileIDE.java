@@ -15,6 +15,7 @@ public class CreatorFileIDE {
     
     private static final String ROOT_FOLDER = "PROYECTO", FOLDER = "CARPETA", FILE = "archivo";
     private static final String OPEN_TAG = "<", CLOSE_TAG = ">", CLOSE_AUX_TAG = "/";
+    private static final String COMILLA = "\"", ESPACIO = " ";
     private String content;
     public CreatorFileIDE() {
         content = "";
@@ -48,26 +49,24 @@ public class CreatorFileIDE {
     }
     
     private void generateFolder(String type, File file, int identation){
+        content +=  ESPACIO.repeat(identation*4);
         content += OPEN_TAG + type + " nombre=" + entreComillas(file.getName()) + CLOSE_TAG + "\n";
     }
     
     private void closeTagFile(String type, int identation){
+        content +=  ESPACIO.repeat(identation*4);
         content += OPEN_TAG + CLOSE_AUX_TAG + type + CLOSE_TAG + "\n";
     }
     
     private void generateFile(File file, int identation){
+        content +=  ESPACIO.repeat(identation*4);
         content += OPEN_TAG + FILE + " nombre=" + entreComillas(file.getName()) 
                 + " ubicacion=" + entreComillas(file.getAbsolutePath()) 
                 + CLOSE_AUX_TAG + CLOSE_TAG + "\n";
     }
- 
-    
-    private String comillas(){
-        return "\"";
-    }
-    
+
     private String entreComillas(String contenido){
-        return comillas() + contenido + comillas();
+        return COMILLA + contenido + COMILLA;
     }
     
 }

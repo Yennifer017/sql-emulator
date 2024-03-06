@@ -3,6 +3,7 @@ package compi1.sqlemulator.traductor.util;
 import compi1.sqlemulator.lexer_parser.Token;
 import compi1.sqlemulator.lexer_parser.sym;
 import compi1.sqlemulator.traductor.components.Assignation;
+import compi1.sqlemulator.traductor.components.Column;
 import compi1.sqlemulator.traductor.components.Condition;
 import compi1.sqlemulator.traductor.components.Filtro;
 import java.util.ArrayList;
@@ -25,12 +26,12 @@ public class SeparatorElements {
         return path;
     }
 
-    public List<Token> separateColumns(List<Token> tokens, Index currentPos) {
-        List<Token> columns = new ArrayList<>();
+    public List<Column> separateColumns(List<Token> tokens, Index currentPos) {
+        List<Column> columns = new ArrayList<>();
         int typeTkn = tokens.get(currentPos.getNum()).getType();
         while (typeTkn == sym.IDENTIFICADOR || typeTkn == sym.COMA || typeTkn == sym.ASTERISCO) {
             if (typeTkn == sym.IDENTIFICADOR) {
-                columns.add(tokens.get(currentPos.getNum()));
+                columns.add(new Column(tokens.get(currentPos.getNum())));
             }
             currentPos.increment();
             typeTkn = tokens.get(currentPos.getNum()).getType();

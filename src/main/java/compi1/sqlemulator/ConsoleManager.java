@@ -102,5 +102,5 @@ public class ConsoleManager {
         }
         return content;
     }
-
+    
 }

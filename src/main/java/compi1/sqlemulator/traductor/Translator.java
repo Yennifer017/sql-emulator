@@ -1,6 +1,7 @@
 
 package compi1.sqlemulator.traductor;
 
+import compi1.sqlemulator.ConsoleManager;
 import compi1.sqlemulator.files.AdmiFiles;
 import compi1.sqlemulator.lexer_parser.Token;
 import compi1.sqlemulator.lexer_parser.sym;
@@ -13,7 +14,7 @@ import java.util.List;
  * @author yenni
  */
 public class Translator {
-    
+    public static final String EMPTY_COLUMN = "null";
     private DeleteTrans deleteTrans;
     private InsertTrans insertTrans;
     private SelectTrans selectTrans;
@@ -34,7 +35,7 @@ public class Translator {
     public String translateCode(List<Token> tokens){
         index.restart();
         semanticErros.clear();
-        String output = "Output\n";
+        String output = "\n******************\n******Output******\n******************\n";
         while (index.getNum() < tokens.size()) {            
             switch (tokens.get(index.getNum()).getType()) {
                 case sym.SELECCIONAR -> output += selectTrans.translate(tokens, index);

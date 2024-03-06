@@ -32,6 +32,7 @@ public class UpdateTrans extends TranslatorStm {
         super.separator =  new SeparatorElements();
         super.admiFiles = admiFiles;
         totalUpdated = 0;
+        super.errorMss = ERROR_MSS + "update";
         filterTraductor = new FilterTraductor();
     }
     

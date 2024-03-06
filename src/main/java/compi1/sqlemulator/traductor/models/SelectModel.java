@@ -1,26 +1,18 @@
 
 package compi1.sqlemulator.traductor.models;
 
-import compi1.sqlemulator.lexer_parser.Token;
+import compi1.sqlemulator.traductor.components.Column;
 import compi1.sqlemulator.traductor.components.Filtro;
 import java.util.List;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author yenni
  */
-@Getter
+@Getter @Setter
 public class SelectModel extends AbsModel{
-    private List<Token> columns;
+    private List<Column> columns;
     private Filtro filtro;
-    
-    public void setColumns(List<Token> columns){
-        this.columns = columns;
-    }
-    
-    public void setFiltro(Filtro filtro){
-        this.filtro = filtro;
-    }
-    
 }

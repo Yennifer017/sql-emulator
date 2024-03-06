@@ -11,10 +11,8 @@ import compi1.sqlemulator.traductor.components.Filtro;
  */
 public class FilterTraductor {
 
-    public static final String EMPTY_COLUM = "null";
-
     private boolean validate(String value, Condition condition) throws InvalidDataException {
-        if (value.isBlank() || value.isEmpty() || value.equals(EMPTY_COLUM)) {
+        if (value.isBlank() || value.isEmpty() || value.equals(Translator.EMPTY_COLUMN)) {
             return false;
         } else {
             switch (condition.getCodeRelationalOp()) {

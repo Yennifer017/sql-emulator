@@ -182,11 +182,13 @@ public class Fronted extends javax.swing.JFrame {
         interfazPanel.setForeground(new java.awt.Color(13, 13, 13));
 
         display.setBackground(new java.awt.Color(0, 0, 43));
+        display.setFont(new java.awt.Font("Dialog", 0, 13)); // NOI18N
         display.setForeground(new java.awt.Color(234, 234, 234));
         display.setCaretColor(new java.awt.Color(255, 255, 255));
         displayScroll.setViewportView(display);
 
         console.setBackground(new java.awt.Color(0, 0, 43));
+        console.setFont(new java.awt.Font("Dialog", 0, 13)); // NOI18N
         console.setForeground(new java.awt.Color(234, 234, 234));
         console.setCaretColor(new java.awt.Color(255, 255, 255));
         console.addCaretListener(new javax.swing.event.CaretListener() {
