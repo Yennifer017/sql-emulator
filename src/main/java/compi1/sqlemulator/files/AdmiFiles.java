@@ -45,6 +45,9 @@ public class AdmiFiles {
     private JLabel labelForFileName;
     private CSVinterpretor csvInterpretor;
 
+    private static final String COLUMN_FORMAT = "([a-z]|[A-Z]| _ )([a-z]|[A-Z]| _ |[0-9]| - | @ | + | [*] | #)*";
+    private static final String CSV_COLUMNS_FORMAT = COLUMN_FORMAT + "(," + COLUMN_FORMAT + "+)*";
+
     public AdmiFiles(JTree treeDisplay, JPanel filesBar, JTextPane displayContent, JLabel labelForFileName) {
         this.treeDisplay = treeDisplay;
         this.filesU = new UtilForFiles();
@@ -251,25 +254,25 @@ public class AdmiFiles {
             currentFile = new OpenFile(file, content);
         }
     }
-    
-    public String createProject() throws IOException, InvalidDataException{
-        JOptionPane.showMessageDialog(null, 
+
+    public String createProject() throws IOException, InvalidDataException {
+        JOptionPane.showMessageDialog(null,
                 "A continuacion selecciona el path donde sera guardado el proyecto");
         String rootPath = directoryU.getPathFolder();
         String nameProject = JOptionPane.showInputDialog("Ingresa el nombre del proyecto");
-        if(nameProject.matches("([a-z]|[A-Z]| _ )([a-z]|[A-Z]| _ |[0-9]| - | @ | + | [*] | #)*")){
+        if (nameProject.matches("([a-z]|[A-Z]| _ )([a-z]|[A-Z]| _ |[0-9]| - | @ | + | [*] | #)*")) {
             directoryU.createDirectory(rootPath, nameProject);
             rootPath += directoryU.getCarpetSeparator() + nameProject;
-            JOptionPane.showMessageDialog(null, 
+            JOptionPane.showMessageDialog(null,
                     "A continuacion seleccina los archivos que sean copiados al proyecto");
-            String error = directoryU.copyFilesToPath(rootPath, 
+            String error = directoryU.copyFilesToPath(rootPath,
                     filesU.getFiles("Archivos csv", aceptedExtensions));
-            if(!error.isEmpty()){
-                throw new InvalidDataException(error + 
-                        "\n Advertencia: la carpeta se ha creado, por favor ingresa los archivos manualmente");
+            if (!error.isEmpty()) {
+                throw new InvalidDataException(error
+                        + "\n Advertencia: la carpeta se ha creado, por favor ingresa los archivos manualmente");
             }
             return rootPath;
-        }else {
+        } else {
             throw new InvalidDataException("El nombre de la carpeta no es valida");
         }
     }
@@ -321,13 +324,14 @@ public class AdmiFiles {
             throw new DirectoryException();
         }
     }
-    
-    public void appendContent(String content) throws BadLocationException{
+
+    public void appendContent(String content) throws BadLocationException {
         StyledDocument doc = displayContent.getStyledDocument();
         SimpleAttributeSet attributeSet = new SimpleAttributeSet();
         doc.insertString(doc.getLength(), content, attributeSet);
     }
-    public void setNewContent(String content){
+
+    public void setNewContent(String content) {
         displayContent.setText(content);
     }
 
@@ -338,13 +342,69 @@ public class AdmiFiles {
     public OpenFile getCurrentFile() {
         return this.currentFile;
     }
-    
-    public CSVinterpretor getCSVinterpretor(){
+
+    public CSVinterpretor getCSVinterpretor() {
         return this.csvInterpretor;
     }
-    
-    public String getCurrentDisplayTxt(){
+
+    public String getCurrentDisplayTxt() {
         return this.displayContent.getText().replace("\t", "");
+    }
+
+    private String getRootFolderProject() throws DirectoryException {
+        if (currentProject.isEmpty()) {
+            throw new DirectoryException();
+        }
+        DefaultTreeModel model = (DefaultTreeModel) treeDisplay.getModel();
+        DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+        FileProject rootNode = (FileProject) root.getUserObject();
+        String rootPath = rootNode.getFile().getAbsolutePath();
+        return rootPath;
+    }
+
+    public String saveNewFileInProject() throws InvalidDataException, IOException, DirectoryException {
+        JOptionPane.showMessageDialog(null, "Selecciona la carpeta donde se guardara el archivo, "
+                + "esta tiene que estar dentro del proyecto actual");
+        String rootFolder = directoryU.getPathFolder();
+        if (rootFolder.contains(this.getRootFolderProject())) {
+            String content = JOptionPane.showInputDialog(
+                    "Ingresa las columnas que iran en el archivo, separado con comas y sin espacios");
+            if (!content.matches(CSV_COLUMNS_FORMAT)) {
+                throw new InvalidDataException("El formato de columnas es invalido");
+            }
+            String path = JOptionPane.showInputDialog(null, "Ingresa un nombre para guardar el archivo",
+                    "Guardando un nuevo archivo", JOptionPane.QUESTION_MESSAGE);
+            if (!path.matches(COLUMN_FORMAT)) {
+                throw new InvalidDataException("El nombre del archivo es invalido");
+            }
+
+            filesU.saveAs(content, ".csv", rootFolder, path);
+            return this.getRootFolderProject();
+        } else {
+            throw new InvalidDataException("La carpeta seleccionada, no esta dentro del proyecto");
+        }
+    }
+
+    public boolean isOpenProject() {
+        return !currentProject.isEmpty();
+    }
+
+    public String saveNewFile() throws InvalidDataException, IOException {
+        JOptionPane.showMessageDialog(null, "Selecciona la carpeta donde se guardara el archivo,"
+                + " toma en cuenta que tendraas que abirlo manualmente luego de haber sido guardado");
+        String root = directoryU.getPathFolder();
+        String content = JOptionPane.showInputDialog(
+                "Ingresa las columnas que iran en el archivo, separado con comas y sin espacios");
+        if (!content.matches(CSV_COLUMNS_FORMAT)) {
+            throw new InvalidDataException("El formato de columnas es invalido");
+        }
+        String path = JOptionPane.showInputDialog(null, "Ingresa un nombre para guardar el archivo",
+                "Guardando un nuevo archivo", JOptionPane.QUESTION_MESSAGE);
+        if (!path.matches(COLUMN_FORMAT)) {
+            throw new InvalidDataException("El nombre del archivo es invalido");
+        }
+        filesU.saveAs(content, ".csv", root, path);
+        return root + directoryU.getCarpetSeparator() + path + ".csv";
     }
     
 }

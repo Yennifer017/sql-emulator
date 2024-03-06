@@ -14,6 +14,8 @@ import compi1.sqlemulator.files.AdmiFiles;
 import compi1.sqlemulator.util.NumberLine;
 import java.awt.Dimension;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 
@@ -519,7 +521,23 @@ public class Fronted extends javax.swing.JFrame {
     }//GEN-LAST:event_createProyectOpActionPerformed
 
     private void newFileOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newFileOpActionPerformed
-        JOptionPane.showMessageDialog(null, "Sera implementado en la v. 1.2");
+        try {
+           if(admiFiles.isOpenProject()){
+               String rootPath = admiFiles.saveNewFileInProject();
+               admiFiles.closeProject();
+               admiFiles.openProject(rootPath);
+           }else{
+               admiFiles.saveNewFile();
+           }
+        } catch (InvalidDataException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        } catch (IOException ex) {
+            showInesperatedError();
+        } catch (DirectoryException ex) {
+            JOptionPane.showMessageDialog(null, "Ocurrio un error con el directorio");
+        } catch (Exception ex){
+            showInesperatedError();
+        }
     }//GEN-LAST:event_newFileOpActionPerformed
 
 

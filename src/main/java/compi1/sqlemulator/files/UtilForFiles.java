@@ -106,13 +106,12 @@ public class UtilForFiles {
         archivo.delete();
     }
 
-    public void saveAs(String text, String extension) {
-        String path = JOptionPane.showInputDialog(null, "Ingresa un nombre para guardar el archivo",
-                "Guardando un nuevo archivo", JOptionPane.QUESTION_MESSAGE);
+    public void saveAs(String text, String extension, String rootFolder, String path) {
         if (path != null && !path.equals("")) {
             File file = new File(path + extension);
             if (!file.exists()) {
-                this.saveFile(text, path + extension);
+                this.saveFile(text, rootFolder + UtilForDirectories.getCarpetSeparatorStatic() 
+                        +  path + extension);
                 JOptionPane.showMessageDialog(null, "Se ha guardado el archivo", ""
                         + "Guardado exitoso", JOptionPane.INFORMATION_MESSAGE);
             } else {

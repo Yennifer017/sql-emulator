@@ -92,4 +92,13 @@ public class UtilForDirectories {
             return "/";
         }
     }
+    
+    public static String getCarpetSeparatorStatic() {
+        String osName = System.getProperty("os.name");
+        if (osName.toLowerCase().contains("windows")) {
+            return "\\";
+        } else {
+            return "/";
+        }
+    }
 }
