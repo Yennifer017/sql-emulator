@@ -103,6 +103,29 @@
             </MenuItem>
           </SubComponents>
         </Menu>
+        <Menu class="javax.swing.JMenu" name="foldersMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Carpetas"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="createFolder">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Crear nueva carpeta"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="createFolderActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="deleteFolderOp">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Eliminar carpeta"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteFolderOpActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
         <Menu class="javax.swing.JMenu" name="Information">
           <Properties>
             <Property name="text" type="java.lang.String" value="Informacion"/>

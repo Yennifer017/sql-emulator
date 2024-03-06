@@ -363,8 +363,10 @@ public class AdmiFiles {
     }
 
     public String saveNewFileInProject() throws InvalidDataException, IOException, DirectoryException {
-        JOptionPane.showMessageDialog(null, "Selecciona la carpeta donde se guardara el archivo, "
-                + "esta tiene que estar dentro del proyecto actual");
+        JOptionPane.showMessageDialog(null, """
+                                            Selecciona la carpeta donde se guardara el archivo, esta tiene que estar dentro del proyecto actual, 
+                                            
+                                            IMPORTANTE!!!: guarda los archivos abiertos antes""");
         String rootFolder = directoryU.getPathFolder();
         if (rootFolder.contains(this.getRootFolderProject())) {
             String content = JOptionPane.showInputDialog(
@@ -406,5 +408,29 @@ public class AdmiFiles {
         filesU.saveAs(content, ".csv", root, path);
         return root + directoryU.getCarpetSeparator() + path + ".csv";
     }
-    
+
+    public String createFolder() throws InvalidDataException, IOException, DirectoryException {
+        if (!currentProject.isEmpty()) {
+            JOptionPane.showMessageDialog(null, """
+                                                Selecciona la carpeta donde se guardara el archivo, esta tiene que estar dentro del proyecto actual, 
+                                                
+                                                IMPORTANTE: guarda los archivos abiertos antes""");
+            String rootFolder = directoryU.getPathFolder();
+            if (rootFolder.contains(this.getRootFolderProject())) {
+                String path = JOptionPane.showInputDialog(null, "Ingresa un nombre para la carpeta",
+                        "Guardando una carpeta", JOptionPane.QUESTION_MESSAGE);
+                if (!path.matches(COLUMN_FORMAT)) {
+                    throw new InvalidDataException("El nombre del archivo es invalido");
+                }
+                directoryU.createDirectory(rootFolder, path);
+                JOptionPane.showMessageDialog(null, "Carpeta creada exitosamente");
+                return this.getRootFolderProject();
+            } else {
+                throw new InvalidDataException("La carpeta seleccionada, no esta dentro del proyecto");
+            }
+        } else {
+            throw new InvalidDataException("No hay un proyecto abierto, no se puede crear una carpeta");
+        }
+    }
+
 }

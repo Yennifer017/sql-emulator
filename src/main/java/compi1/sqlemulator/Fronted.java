@@ -67,7 +67,7 @@ public class Fronted extends javax.swing.JFrame {
             display.setText("");
         } catch (DirectoryException ex) {
             System.out.println("Excepcion de directorio controlada");
-        } catch (Exception ex){
+        } catch (Exception ex) {
             showInesperatedError();
         }
     }
@@ -77,7 +77,7 @@ public class Fronted extends javax.swing.JFrame {
             admiFiles.closeFile();
         } catch (FileException ex1) {
             showInesperatedError();
-        } catch (Exception ex){
+        } catch (Exception ex) {
             showInesperatedError();
         }
     }
@@ -101,7 +101,7 @@ public class Fronted extends javax.swing.JFrame {
                     "Cerrar archivo", JOptionPane.YES_NO_OPTION) == 0) {
                 closeFile();
             }
-        } catch (Exception ex){
+        } catch (Exception ex) {
             showInesperatedError();
         }
     }
@@ -145,6 +145,9 @@ public class Fronted extends javax.swing.JFrame {
         saveOp = new javax.swing.JMenuItem();
         saveAsOp = new javax.swing.JMenuItem();
         CloseFileOp = new javax.swing.JMenuItem();
+        foldersMenu = new javax.swing.JMenu();
+        createFolder = new javax.swing.JMenuItem();
+        deleteFolderOp = new javax.swing.JMenuItem();
         Information = new javax.swing.JMenu();
         helpOp = new javax.swing.JMenuItem();
         creditsOp = new javax.swing.JMenuItem();
@@ -361,6 +364,26 @@ public class Fronted extends javax.swing.JFrame {
 
         menu.add(fileMenu);
 
+        foldersMenu.setText("Carpetas");
+
+        createFolder.setText("Crear nueva carpeta");
+        createFolder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createFolderActionPerformed(evt);
+            }
+        });
+        foldersMenu.add(createFolder);
+
+        deleteFolderOp.setText("Eliminar carpeta");
+        deleteFolderOp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteFolderOpActionPerformed(evt);
+            }
+        });
+        foldersMenu.add(deleteFolderOp);
+
+        menu.add(foldersMenu);
+
         Information.setText("Informacion");
 
         helpOp.setText("Ayuda");
@@ -522,23 +545,43 @@ public class Fronted extends javax.swing.JFrame {
 
     private void newFileOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newFileOpActionPerformed
         try {
-           if(admiFiles.isOpenProject()){
-               String rootPath = admiFiles.saveNewFileInProject();
-               admiFiles.closeProject();
-               admiFiles.openProject(rootPath);
-           }else{
-               admiFiles.saveNewFile();
-           }
+            if (admiFiles.isOpenProject()) {
+                String rootPath = admiFiles.saveNewFileInProject();
+                admiFiles.closeProject();
+                admiFiles.openProject(rootPath);
+            } else {
+                admiFiles.saveNewFile();
+            }
         } catch (InvalidDataException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         } catch (IOException ex) {
             showInesperatedError();
         } catch (DirectoryException ex) {
             JOptionPane.showMessageDialog(null, "Ocurrio un error con el directorio");
-        } catch (Exception ex){
+        } catch (Exception ex) {
             showInesperatedError();
         }
     }//GEN-LAST:event_newFileOpActionPerformed
+
+    private void createFolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createFolderActionPerformed
+        try {
+            String rootFolder = admiFiles.createFolder();
+            admiFiles.closeProject();
+            admiFiles.openProject(rootFolder);
+        } catch (InvalidDataException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        } catch (IOException ex) {
+            showInesperatedError();
+        } catch (DirectoryException ex) {
+            JOptionPane.showMessageDialog(null, "Ocurrio un error con el directorio");
+        } catch (Exception ex) {
+            showInesperatedError();
+        }
+    }//GEN-LAST:event_createFolderActionPerformed
+
+    private void deleteFolderOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteFolderOpActionPerformed
+        JOptionPane.showMessageDialog(null, "Espere la actulizacion para usar esta herramienta");
+    }//GEN-LAST:event_deleteFolderOpActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -550,12 +593,15 @@ public class Fronted extends javax.swing.JFrame {
     private javax.swing.JLabel columnaDisplay;
     private javax.swing.JTextPane console;
     private javax.swing.JScrollPane consoleScroll;
+    private javax.swing.JMenuItem createFolder;
     private javax.swing.JMenuItem createProyectOp;
     private javax.swing.JMenuItem creditsOp;
+    private javax.swing.JMenuItem deleteFolderOp;
     private javax.swing.JTextPane display;
     private javax.swing.JScrollPane displayScroll;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JLabel fileNameDisplay;
+    private javax.swing.JMenu foldersMenu;
     private javax.swing.JMenuItem helpOp;
     private javax.swing.JPanel interfazPanel;
     private javax.swing.JLabel jLabel1;
